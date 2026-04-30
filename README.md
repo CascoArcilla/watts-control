@@ -19,3 +19,6 @@ Es un proyecto personal para llevar el control del consumo de KW/h y el pago del
 - MySQL
 - JWT (con refresh tokens)
 - React con Vite
+
+## Sobre este repositorio
+Este repositorio se inicio con el prompt [Promt-Inicial.md](./Promt-Inicial.md) indicando que solo genere las primeras vistas, a partir de ahí se fueron agregando o cambiando algunos elementos de la aplicación hasta llegar al estado actual. Se recrearon los modelos con el CLI de Sequelize para generar migraciones y llevar un mejor control de los cambios en la base de datos.
