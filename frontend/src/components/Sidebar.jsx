@@ -1,8 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Zap, Activity, Shield, LogOut, Clock } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function Sidebar() {
   const location = useLocation();
+  const { logout } = useAuth();
 
   const links = [
     { name: 'Admin Dashboard', path: '/admin', icon: Shield },
@@ -42,9 +44,9 @@ export default function Sidebar() {
       </div>
       
       <div className="p-4">
-        <Link 
-          to="/login"
+        <Link
           className="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-darkest/50 hover:text-red-400 transition-colors"
+          onClick={logout}
         >
           <LogOut className="w-5 h-5" />
           <span className="font-medium">Cerrar Sesión</span>

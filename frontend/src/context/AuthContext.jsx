@@ -63,7 +63,6 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await axios.post('/auth/logout');
-      navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
