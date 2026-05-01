@@ -10,7 +10,8 @@ La base de datos será MySQL, esta db ya esta creada y las credenciales estan en
 - EC_DB_PASSWORD: Password de la base de datos (por defecto "12345678")
 - EC_DB_NAME: Nombre de la base de datos (por defecto "control_watts")
 - EC_DB_PORT: Puerto de la base de datos (por defecto 3306)
-- EC_SECRET_KEY: Secret key para JWT
+- EC_SECRET_KEY_JWT: Secret key para JWT
+- REFRESH_SECRET: Refresh token Secret key
 
 ## Modelo Entidad Relación
 

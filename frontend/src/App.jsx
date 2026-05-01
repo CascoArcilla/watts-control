@@ -6,24 +6,34 @@ import MetersMain from './pages/meters/Main';
 import RegisterMeter from './pages/meters/Register';
 import RegisterConsumption from './pages/consumptions/Register';
 import Today from './pages/consumptions/Today';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        
-        {/* Protected Routes with Layout */}
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Navigate to="/consumptions/today" replace />} />
-          <Route path="admin" element={<AdminDashboard />} />
-          <Route path="meters" element={<MetersMain />} />
-          <Route path="meters/register" element={<RegisterMeter />} />
-          <Route path="consumptions/register" element={<RegisterConsumption />} />
-          <Route path="consumptions/today" element={<Today />} />
-        </Route>
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Navigate to="/consumptions/today" replace />} />
+              <Route path="consumptions/register" element={<RegisterConsumption />} />
+              <Route path="consumptions/today" element={<Today />} />
+              <Route path="meters" element={<MetersMain />} />
+
+              {/* Admin only */}
+              <Route element={<ProtectedRoute allowedRoles={['Administrador']} />}>
+                <Route path="meters/register" element={<RegisterMeter />} />
+                <Route path="admin" element={<AdminDashboard />} />
+              </Route>
+            </Route>
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

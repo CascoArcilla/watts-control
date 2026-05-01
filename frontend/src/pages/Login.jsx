@@ -1,16 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Zap, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
 
-  const handleLogin = (e) => {
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/consumptions/today');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Placeholder login action
-    navigate('/consumptions/today');
+    setError('');
+    try {
+      await login(username, password);
+      navigate('/consumptions/today');
+    } catch (err) {
+      setError('Credenciales inválidas');
+    }
   };
 
   return (
@@ -33,6 +47,11 @@ export default function Login() {
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
+            {error && (
+              <div className="p-3 rounded bg-red-500/20 border border-red-500/50 text-red-200 text-sm text-center">
+                {error}
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Usuario</label>
               <input 
@@ -55,14 +74,6 @@ export default function Login() {
                 placeholder="••••••••"
                 required
               />
-            </div>
-
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center text-gray-400">
-                <input type="checkbox" className="mr-2 rounded border-gray-green text-light-mint focus:ring-light-mint bg-darkest/50" />
-                Recordarme
-              </label>
-              <a href="#" className="text-light-mint hover:underline">¿Olvidaste tu contraseña?</a>
             </div>
 
             <button type="submit" className="w-full btn-primary flex items-center justify-center space-x-2">

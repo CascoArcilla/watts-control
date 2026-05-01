@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     first_name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     last_name: {
       type: DataTypes.STRING,
@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     use_password: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false
+      defaultValue: true
     },
   }, {
     sequelize,
