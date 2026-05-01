@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import AdminDashboard from './pages/admin/Dashboard';
 import CreateUser from './pages/admin/users/Create';
 import UserList from './pages/admin/users/List';
+import MeterPermissions from './pages/admin/meters/Permissions';
 import MetersMain from './pages/meters/Main';
 import RegisterMeter from './pages/meters/Register';
 import RegisterConsumption from './pages/consumptions/Register';
@@ -32,6 +33,7 @@ function App() {
                 <Route path="admin" element={<AdminDashboard />} />
                 <Route path="admin/users" element={<UserList />} />
                 <Route path="admin/users/create" element={<CreateUser />} />
+                <Route path="admin/meters/:id/permissions" element={<MeterPermissions />} />
               </Route>
             </Route>
           </Route>

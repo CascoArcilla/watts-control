@@ -20,7 +20,7 @@ entity "User" as user {
 entity "Meter" as meter {
   + id [PK] : int <<auto_increment>>
   --
-  * number_meter : int
+  * number_meter : int <<unique>>
   * userId : int <<FK>>
   * status_meter : enum('active', 'inactive') = 'active'
 }
