@@ -14,15 +14,13 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// Basic route test
 app.get('/api/health', (req, res) => {
   res.json({ status: 'API Eletrican Control running...' });
 });
 
-// Routes placeholders
+// Routes
 app.use('/api/auth', require('./routes/auth'));
-// app.use('/api/meters', require('./routes/meters'));
-// app.use('/api/consumptions', require('./routes/consumptions'));
+app.use('/api/users', require('./routes/users'));
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Zap, Activity, Shield, LogOut, Clock } from 'lucide-react';
+import { Home, Zap, Activity, Shield, LogOut, Clock, Users, UserPlus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Sidebar() {
@@ -8,6 +8,8 @@ export default function Sidebar() {
 
   const links = [
     { name: 'Admin Dashboard', path: '/admin', icon: Shield, roles: ['Administrador'] },
+    { name: 'Usuarios', path: '/admin/users', icon: Users, roles: ['Administrador'] },
+    { name: 'Crear Usuario', path: '/admin/users/create', icon: UserPlus, roles: ['Administrador'] },
     { name: 'Registrar Medidor', path: '/meters/register', icon: Zap, roles: ['Administrador'] },
     { name: 'Medidores', path: '/meters', icon: Clock },
     { name: 'Consumo de Hoy', path: '/consumptions/today', icon: Home },

@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import AdminDashboard from './pages/admin/Dashboard';
+import CreateUser from './pages/admin/users/Create';
+import UserList from './pages/admin/users/List';
 import MetersMain from './pages/meters/Main';
 import RegisterMeter from './pages/meters/Register';
 import RegisterConsumption from './pages/consumptions/Register';
@@ -28,6 +30,8 @@ function App() {
               <Route element={<ProtectedRoute allowedRoles={['Administrador']} />}>
                 <Route path="meters/register" element={<RegisterMeter />} />
                 <Route path="admin" element={<AdminDashboard />} />
+                <Route path="admin/users" element={<UserList />} />
+                <Route path="admin/users/create" element={<CreateUser />} />
               </Route>
             </Route>
           </Route>
