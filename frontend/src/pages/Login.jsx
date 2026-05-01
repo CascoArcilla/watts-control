@@ -42,8 +42,8 @@ export default function Login() {
                 <Zap className="w-10 h-10 text-light-mint" />
               </div>
             </div>
-            <h1 className="text-3xl font-bold text-white tracking-wider">Eletrican Control</h1>
-            <p className="text-gray-400 mt-2 text-sm">Gestiona el consumo de energía eficientemente</p>
+            <h1 className="text-3xl font-bold text-white tracking-wider">EC Control</h1>
+            <p className="text-gray-400 mt-2 text-sm">Gestiona tu consumo de energía</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
