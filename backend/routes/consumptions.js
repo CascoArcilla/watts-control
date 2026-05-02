@@ -1,10 +1,11 @@
 const { Router } = require('express');
 const router = Router();
-const cc = require('../controllers/consumptionsController');
+const mc = require('../controllers/mesureController.js');
 const { verifyToken } = require('../middleware/authMiddleware');
 
 const auth = [verifyToken];
 
-router.post('/', ...auth, cc.register);
+router.get('/', ...auth, mc.getMeasures);
+router.post('/', ...auth, mc.register);
 
 module.exports = router;

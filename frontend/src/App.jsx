@@ -9,6 +9,7 @@ import MetersMain from './pages/meters/Main';
 import RegisterMeter from './pages/meters/Register';
 import RegisterConsumption from './pages/consumptions/Register';
 import Today from './pages/consumptions/Today';
+import History from './pages/consumptions/History';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -25,6 +26,7 @@ function App() {
               <Route index element={<Navigate to="/consumptions/today" replace />} />
               <Route path="consumptions/register" element={<RegisterConsumption />} />
               <Route path="consumptions/today" element={<Today />} />
+              <Route path="consumptions/history" element={<History />} />
               <Route path="meters" element={<MetersMain />} />
 
               {/* Admin only */}
