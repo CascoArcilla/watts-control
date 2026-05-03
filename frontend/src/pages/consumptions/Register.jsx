@@ -1,17 +1,61 @@
-import { useState } from 'react';
-import { Save, ArrowLeft, Calendar } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useCallback, useEffect } from 'react';
+import { Save, ArrowLeft, AlertCircle, Loader } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 export default function RegisterConsumption() {
-  const [meter, setMeter] = useState('');
+  const [meter, setMeter] = useState({ id: '', number_meter: '' });
   const [watts, setWatts] = useState('');
-  const [date, setDate] = useState('');
-  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const [meters, setMeters] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const fetchMeters = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await axios.get('/meters');
+      setMeters(res.data.meters);
+    } catch {
+      setError('No se pudo cargar la lista de medidores.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchMeters(); }, [fetchMeters]);
+
+  const changeSelectMeter = (e) => {
+    setMeter({
+      id: e.target.value,
+      number_meter: meters.find(m => m.id === parseInt(e.target.value))?.number_meter
+    })
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Placeholder logic
-    navigate('/meters');
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    if (!meter.id || !watts || isNaN(watts) || parseInt(watts) <= 0) {
+      setError('Todos los campos son obligatorios.');
+      return;
+    }
+
+    try {
+      await axios.post('/consumptions', { meter, watts });
+      setSuccess('Consumo registrado exitosamente.');
+      setMeter({ id: '', number_meter: '' });
+      setWatts('');
+    } catch (err) {
+      setError(err.response.data.message);
+      setSuccess(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -26,31 +70,48 @@ export default function RegisterConsumption() {
         </div>
       </div>
 
+      {error && (
+        <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3">
+          <AlertCircle className="w-5 h-5 shrink-0" />
+          <span className="text-sm">{error}</span>
+        </div>
+      )}
+
+      {success && (
+        <div className="flex items-center gap-3 bg-green-500/10 border border-green-500/30 text-green-400 rounded-xl px-4 py-3">
+          <AlertCircle className="w-5 h-5 shrink-0" />
+          <span className="text-sm">{success}</span>
+        </div>
+      )}
+
       <div className="glass-card">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Medidor</label>
               <select
-                value={meter}
-                onChange={(e) => setMeter(e.target.value)}
+                value={meter.id}
+                onChange={changeSelectMeter}
                 className="input-field"
+                disabled={loading}
                 required
               >
                 <option value="" disabled>Selecciona un medidor</option>
-                <option value="1">#100456</option>
-                <option value="2">#200891</option>
-                <option value="3">#300124</option>
+                {meters.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    #{m.number_meter} - {m.User.first_name} {m.User.last_name}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Consumo en kW/h</label>
-              <input 
-                type="number" 
+              <input
+                type="number"
                 value={watts}
                 onChange={(e) => setWatts(e.target.value)}
-                className="input-field" 
+                className="input-field"
                 placeholder="Ej. 120"
                 required
               />
@@ -58,10 +119,23 @@ export default function RegisterConsumption() {
           </div>
 
           <div className="pt-4 border-t border-gray-green/20 flex justify-end space-x-3">
-            <Link to="/consumptions/today" className="btn-secondary">Cancelar</Link>
-            <button type="submit" className="btn-primary flex items-center space-x-2">
-              <Save className="w-4 h-4" />
-              <span>Guardar Consumo</span>
+           <Link to="/consumptions/today" className="btn-secondary">Cancelar</Link>
+            <button
+              type="submit"
+              className="btn-primary flex items-center space-x-2"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader className="w-4 h-4 animate-spin" />
+                  <span>Registrando...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>Registrar Consumo</span>
+                </>
+              )}
             </button>
           </div>
         </form>

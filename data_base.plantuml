@@ -42,8 +42,8 @@ entity "Measure" as measure {
   + id [PK] : int <<auto_increment>>
   --
   * watts : int
-  * meterId : int <<FK>>
-  * userId : int <<FK>>
+  * meterId : int <<FK>> <<NULL>>
+  * userId : int <<FK>> <<NULL>>
   * createdAt : date = Now()
   * updatedAt : date = Now()
 }
