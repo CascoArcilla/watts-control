@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Configure Axios globally
-axios.defaults.baseURL = 'http://localhost:5000/api';
+const API_URL = __VITE_API_URL__;
+axios.defaults.baseURL = `${API_URL}/api`;
 axios.defaults.withCredentials = true; // IMPORTANT for cookies
 
 const AuthContext = createContext();

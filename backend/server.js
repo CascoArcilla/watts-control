@@ -2,13 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 const { sequelize } = require('./models');
 
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: [process.env.EC_REACT_APP],
   credentials: true
 }));
 app.use(express.json());

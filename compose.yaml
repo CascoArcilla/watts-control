@@ -1,0 +1,60 @@
+services:
+  ec-app-api:
+    build: ./backend/
+    container_name: ec-app-api
+    env_file:
+      - .env
+    ports:
+      - "9200:5000"
+    develop:
+      watch:
+        - path: ./backend
+          action: rebuild
+    depends_on:
+      ec-db-mysql:
+        condition: service_healthy
+    networks:
+      - net-ec-sys
+
+  ec-app-frontend:
+    build:
+      context: ./frontend/
+    container_name: ec-app-frontend
+    ports:
+      - "9300:5173"
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+    develop:
+      watch:
+        - path: ./frontend
+          action: rebuild
+    depends_on:
+      ec-app-api:
+        condition: service_started
+    networks:
+      - net-ec-sys
+
+  ec-db-mysql:
+    image: mysql:8.0
+    restart: always
+    container_name: ec-db-mysql
+    volumes:
+      - db-control-watts:/var/lib/mysql
+    env_file:
+      - .env
+    expose:
+      - "${EC_DB_PORT}"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - net-ec-sys
+
+networks:
+  net-ec-sys:
+    driver: bridge
+
+volumes:
+  db-control-watts:

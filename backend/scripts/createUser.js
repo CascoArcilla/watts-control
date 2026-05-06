@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const usernameRegex = require('../consts/regexUsername.js');
 const passwordRegex = require('../consts/regexPassword.js');
 const { User, Group } = require('../models');
