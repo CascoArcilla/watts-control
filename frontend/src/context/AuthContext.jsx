@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_URL = __VITE_API_URL__;
+const API_URL = __VITE_API_URL__ || "";
 axios.defaults.baseURL = `${API_URL}/api`;
 axios.defaults.withCredentials = true; // IMPORTANT for cookies
 

@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { Op } = require('sequelize');
 const { User, Group } = require('../models');
 const passwordRegex = require('../consts/regexPassword');

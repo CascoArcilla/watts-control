@@ -42,8 +42,8 @@ services:
       - db-control-watts:/var/lib/mysql
     env_file:
       - .env
-    expose:
-      - "${EC_DB_PORT}"
+    ports:
+      - "9100:${EC_DB_PORT}"
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
