@@ -18,4 +18,7 @@ router.patch('/:id', ...adminOnly, userController.updateUser);
 // Update user groups — admin only
 router.put('/:id/groups', ...adminOnly, userController.updateUserGroups);
 
+// Block/unblock user — admin only
+router.put('/:id/block', ...adminOnly, userController.blockUser);
+
 module.exports = router;

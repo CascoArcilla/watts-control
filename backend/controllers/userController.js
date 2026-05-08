@@ -188,3 +188,35 @@ exports.updateUserGroups = async (req, res) => {
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
+
+// PUT /api/users/:id/block — block or unblock a user (admin only)
+exports.blockUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { block } = req.body;
+
+    const user = await User.findByPk(id, {
+      attributes: { exclude: ['password'] },
+    });
+
+
+    if (!user) return res.status(404).json({ message: 'Usuario no encontrado.' });
+    if (block === undefined) return res.status(400).json({ message: 'Se requiere el campo block.' });
+    if (typeof block !== 'boolean') return res.status(400).json({ message: 'El campo block debe ser un booleano.' });
+    if (user.id === req.user.id) return res.status(403).json({ message: 'No se puede bloquear al usuario actual.' });
+
+    if (user.is_bloked === block) {
+      const message = block ? 'El usuario ya se encuentra bloqueado.' : 'El usuario ya se encuentra desbloqueado.';
+      return res.status(400).json({ message });
+    }
+
+    await user.update({ is_bloked: block });
+
+    const message = block ? 'Usuario bloqueado correctamente.' : 'Usuario desbloqueado correctamente.';
+
+    return res.json({ message, user });
+  } catch (error) {
+    console.error('blockUser error:', error);
+    return res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+};

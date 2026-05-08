@@ -4,10 +4,11 @@ import axios from 'axios';
 import {
   Users, UserPlus, ChevronLeft, ChevronRight,
   Shield, Eye, EyeOff, AlertCircle, RefreshCw,
-  Edit, ShieldAlert
+  Edit, ShieldAlert, UserX, LockKeyhole, LockKeyholeOpen
 } from 'lucide-react';
 import EditUserModal from './EditUserModal';
 import EditGroupsModal from './EditGroupsModal';
+import BlockUnblockUserModal from './BlockUnblockUserModal';
 
 const GROUP_COLORS = {
   'Administrador': 'bg-purple-500/15 text-purple-300 border-purple-500/30',
@@ -36,6 +37,7 @@ export default function UserList() {
   // Modals state
   const [editingUser, setEditingUser] = useState(null);
   const [editingGroupsUser, setEditingGroupsUser] = useState(null);
+  const [blockUnblockUser, setBlockUnblockUser] = useState(null);
 
   const fetchUsers = useCallback(async (page = 1) => {
     setLoading(true);
@@ -176,11 +178,28 @@ export default function UserList() {
                     </button>
                     <button
                       onClick={() => setEditingGroupsUser(user)}
-                      className="p-2 bg-dark/50 hover:bg-medium-green hover:text-white text-medium-green rounded-lg transition-colors inline-flex"
+                      className="p-2 bg-dark/50 hover:bg-light-mint hover:text-darkest text-light-mint rounded-lg transition-colors inline-flex"
                       title="Gestionar Grupos"
                     >
                       <ShieldAlert className="w-4 h-4" />
                     </button>
+                    {user.is_bloked ? (
+                      <button
+                        onClick={() => setBlockUnblockUser(user)}
+                        className="p-2 bg-dark/50 hover:bg-red-500/15 hover:text-red-500 text-red-500 rounded-lg transition-colors inline-flex"
+                        title="Desbloquear Usuario"
+                      >
+                        <LockKeyhole className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setBlockUnblockUser(user)}
+                        className="p-2 bg-dark/50 hover:bg-light-mint hover:text-darkest text-light-mint rounded-lg transition-colors inline-flex"
+                        title="Bloquear Usuario"
+                      >
+                        <LockKeyholeOpen className="w-4 h-4" />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -245,6 +264,12 @@ export default function UserList() {
         user={editingGroupsUser}
         availableGroups={availableGroups}
         onClose={() => setEditingGroupsUser(null)}
+        onSuccess={() => fetchUsers(pagination.page)}
+      />
+
+      <BlockUnblockUserModal
+        user={blockUnblockUser}
+        onClose={() => setBlockUnblockUser(null)}
         onSuccess={() => fetchUsers(pagination.page)}
       />
     </div>
