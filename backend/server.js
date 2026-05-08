@@ -27,6 +27,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/meters', require('./routes/meters'));
 app.use('/api/consumptions', require('./routes/consumptions'));
+app.use('/api/dashboard', require('./routes/dashboard'));
 
 // Manejo de todas las demás rutas (SPA - React Router)
 app.get(/.*/, (req, res) => {
