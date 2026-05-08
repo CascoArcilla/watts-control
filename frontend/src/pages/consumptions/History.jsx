@@ -109,7 +109,7 @@ export default function History() {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="input-field pl-9 py-1.5 text-sm"
+                className="input-field !pl-9 py-1.5 text-sm"
               />
             </div>
           </div>
@@ -121,7 +121,7 @@ export default function History() {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="input-field pl-9 py-1.5 text-sm"
+                className="input-field !pl-9 py-1.5 text-sm"
               />
             </div>
           </div>

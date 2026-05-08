@@ -153,7 +153,7 @@ export default function RegisterMeter() {
                   value={search}
                   onChange={(e) => { setSearch(e.target.value); setOwner(null); }}
                   onFocus={() => { if (owners.length > 0) setShowDropdown(true); }}
-                  className="input-field pl-9"
+                  className="input-field !pl-9"
                   placeholder="Buscar por nombre o usuario..."
                   autoComplete="off"
                 />
