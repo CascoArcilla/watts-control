@@ -16,7 +16,7 @@ export default function ItemRegister({ measure }) {
           </p>
           <p className="text-sm text-gray-400">
             Fecha: <span className="text-white">{new Date(measure.createdAt).toLocaleDateString()}</span> |
-            Hora: <span className="text-white">{new Date(measure.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            Hora: <span className="text-white">{new Date(measure.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}hrs</span>
           </p>
         </div>
       </div>

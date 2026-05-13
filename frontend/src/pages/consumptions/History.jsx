@@ -1,5 +1,6 @@
+import { parseDateInput } from '../../utils/parseDateInput';
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Filter, Zap, RefreshCw, AlertCircle, Calendar, ArrowLeft } from 'lucide-react';
+import { Plus, Filter, Zap, RefreshCw, AlertCircle, Calendar } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ItemRegister from './ItemRegister';
@@ -46,9 +47,8 @@ export default function History() {
         page,
         limit: 10,
         meterId: selectedMeter || undefined,
-        startDate: startDate || undefined,
-        endDate: endDate || undefined,
-        timezoneOffset: new Date().getTimezoneOffset(),
+        startDate: parseDateInput(startDate)?.toDateString() || undefined,
+        endDate: parseDateInput(endDate)?.toDateString() || undefined
       };
       const res = await axios.get('/consumptions', { params });
 

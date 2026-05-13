@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Filter, Zap, RefreshCw, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Plus, Filter, Zap, RefreshCw, AlertCircle } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ItemRegister from './ItemRegister';
@@ -41,12 +41,10 @@ export default function Today() {
     }
 
     try {
-      console.log(new Date().getTimezoneOffset(), new Date().toDateString());
       const params = {
         date: new Date().toDateString(),
         page,
         limit: 10,
-        timezoneOffset: new Date().getTimezoneOffset(),
         meterId: selectedMeter || undefined
       };
       const res = await axios.get('/consumptions', { params });
@@ -69,7 +67,11 @@ export default function Today() {
 
   useEffect(() => { fetchMeters(); }, []);
   useEffect(() => { fetchMeasures(pagination.page); }, [pagination.page]);
-  useEffect(() => { handlePageChange(1); }, [selectedMeter]);
+
+  useEffect(() => {
+    if (pagination.page > 1) handlePageChange(1);
+    else fetchMeasures();
+  }, [selectedMeter]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
@@ -130,7 +132,7 @@ export default function Today() {
             </div>
             <p className="text-xl font-bold text-white">{consumption.kwh} kWh</p>
           </div>
-          <p className="text-sm text-gray-400">Desde: {new Date(consumption.referenceDate).toLocaleDateString()} ({consumption.referenceKwh} kWh)</p>
+          <p className="text-sm text-gray-400">Desde: {new Date(consumption.referenceDate).toLocaleDateString()} {new Date(consumption.referenceDate).toLocaleTimeString()}hrs ({consumption.referenceKwh} kWh)</p>
         </div>
       )}
 
@@ -138,17 +140,10 @@ export default function Today() {
       <div className="glass-card">
         {error && (
           <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-4 mb-6">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center gap-3">
               <AlertCircle className="w-5 h-5 shrink-0" />
               <span className="text-sm font-medium">{error}</span>
             </div>
-            <Link
-              to="/consumptions/today/1"
-              className="inline-flex items-center gap-2 text-xs font-semibold bg-red-500/20 hover:bg-red-500/30 px-3 py-1.5 rounded-lg transition-colors border border-red-500/20"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              Ir a la primera página
-            </Link>
           </div>
         )}
 

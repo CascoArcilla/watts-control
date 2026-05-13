@@ -69,6 +69,7 @@ exports.getMeasures = async (req, res) => {
     if (date) {
       const { start, end } = getUtcBounds(date);
       where.createdAt = { [Op.between]: [start, end] };
+
     } else if (startDate && endDate) {
       const { start } = getUtcBounds(startDate);
       const { end } = getUtcBounds(endDate);
