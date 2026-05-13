@@ -25,8 +25,8 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<Navigate to="/consumptions/today" replace />} />
               <Route path="consumptions/register" element={<RegisterConsumption />} />
-              <Route path="consumptions/today" element={<Today />} />
-              <Route path="consumptions/history" element={<History />} />
+              <Route path="consumptions/today/:page?" element={<Today />} />
+              <Route path="consumptions/history/:page?" element={<History />} />
               <Route path="meters" element={<MetersMain />} />
 
               {/* Admin only */}

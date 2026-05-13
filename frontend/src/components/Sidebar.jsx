@@ -12,8 +12,8 @@ export default function Sidebar() {
     { name: 'Crear Usuario', path: '/admin/users/create', icon: UserPlus, roles: ['Administrador'] },
     { name: 'Registrar Medidor', path: '/meters/register', icon: Zap, roles: ['Administrador'] },
     { name: 'Medidores', path: '/meters', icon: Clock },
-    { name: 'Consumo de Hoy', path: '/consumptions/today', icon: Home },
-    { name: 'Historial de Consumo', path: '/consumptions/history', icon: History },
+    { name: 'Registros de Hoy', path: '/consumptions/today', icon: Home },
+    { name: 'Historial de Registros', path: '/consumptions/history', icon: History },
     { name: 'Registrar Consumo', path: '/consumptions/register', icon: Activity },
   ];
 

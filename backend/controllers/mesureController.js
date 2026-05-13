@@ -1,6 +1,21 @@
 const { Op } = require('sequelize');
 const { Meter, Measure, User, Group } = require('../models');
 
+/**
+ * Calculates the UTC start and end of a local date string
+ * @param {Date} dateClient Date in local format
+ * @param {Integer} offsetMs Timezone offset in milliseconds
+ * @returns {{start: string, end: string}}
+ */
+const getUtcBounds = (dateClient) => {
+  const utcStart = new Date(dateClient);
+  const utcEnd = new Date(utcStart.getTime() + (24 * 60 * 60 * 1000) - 1);
+  return {
+    start: utcStart.toISOString(),
+    end: utcEnd.toISOString()
+  };
+}
+
 // Helper to get accessible meter IDs for a user
 const getAccessibleMeterIds = async (userId, userGroups) => {
   const isAdmin = userGroups.includes('Administrador');
@@ -52,27 +67,34 @@ exports.getMeasures = async (req, res) => {
 
     // Filter by date
     if (date) {
-      const startOfDay = new Date(date).toISOString().split('T')[0] + 'T00:00:00.000Z';
-      const endOfDay = new Date(date).toISOString().split('T')[0] + 'T23:59:59.999Z';
-      where.createdAt = { [Op.between]: [startOfDay, endOfDay] };
+      const { start, end } = getUtcBounds(date);
+      where.createdAt = { [Op.between]: [start, end] };
+
     } else if (startDate && endDate) {
-      const start = new Date(startDate).toISOString().split('T')[0] + 'T00:00:00.000Z';
-      const end = new Date(endDate).toISOString().split('T')[0] + 'T23:59:59.999Z';
+      const { start } = getUtcBounds(startDate);
+      const { end } = getUtcBounds(endDate);
       where.createdAt = { [Op.between]: [start, end] };
     }
 
     const { count, rows } = await Measure.findAndCountAll({
       where,
       include: [
-        { model: Meter, attributes: ['number_meter'] },
-        { model: User, attributes: ['first_name', 'last_name', 'username'] }
+        {
+          model: Meter,
+          attributes: ['number_meter', 'userId'],
+          include: [{ model: User, attributes: ['username', 'first_name', 'last_name'] }]
+        },
+        {
+          model: User,
+          attributes: ['first_name', 'last_name', 'username']
+        }
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),
       order: [['createdAt', 'DESC']]
     });
 
-    res.json({
+    const responseJson = {
       measures: rows,
       pagination: {
         total: count,
@@ -80,7 +102,33 @@ exports.getMeasures = async (req, res) => {
         limit: parseInt(limit),
         totalPages: Math.ceil(count / limit)
       }
-    });
+    };
+
+    // Calculate the meter's consumption from the indicate date
+    if (date && meterId) {
+      const kwhToday = parseInt(rows[0]?.watts) || null;
+
+      const { start: startDayUtc } = getUtcBounds(date);
+      // Find the more recent measure before the indicate date
+      const lastMeasure = await Measure.findOne({
+        where: {
+          meterId,
+          createdAt: { [Op.lt]: startDayUtc }
+        },
+        order: [['createdAt', 'DESC']]
+      });
+
+      if (kwhToday && lastMeasure) {
+        const consumption = parseInt(kwhToday) - parseInt(lastMeasure.watts);
+        responseJson.consumption = {
+          kwh: consumption,
+          referenceDate: lastMeasure?.createdAt || null,
+          referenceKwh: lastMeasure?.watts || null
+        }
+      }
+    }
+
+    res.json(responseJson);
   } catch (error) {
     console.error('getMeasures error:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
@@ -168,3 +216,5 @@ exports.register = async (request, response) => {
     });
   }
 }
+
+exports.getUtcBounds = getUtcBounds;

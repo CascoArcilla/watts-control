@@ -132,7 +132,7 @@ export default function MetersMain() {
                   {canManagePerms && (
                     <Link
                       to={`/admin/meters/${meter.id}/permissions`}
-                      className="text-gray-400 hover:text-light-mint flex items-center gap-1 text-xs transition-colors"
+                      className="text-light-mint hover:underline flex items-center gap-1 text-xs"
                       title="Gestionar permisos"
                     >
                       <Shield className="w-3 h-3" />
