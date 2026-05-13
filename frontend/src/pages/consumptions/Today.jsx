@@ -1,15 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
-import { UserIcon, Plus, Filter, Zap, RefreshCw, AlertCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Plus, Filter, Zap, RefreshCw, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ItemRegister from './ItemRegister';
 import Pagination from './Pagination';
 
 export default function Today() {
+  const { page: pageParam } = useParams();
+  const navigate = useNavigate();
+  const [pagination, setPagination] = useState({
+    page: parseInt(pageParam) || 1,
+    totalPages: 1,
+    total: 0
+  });
+
   const [measures, setMeasures] = useState([]);
   const [meters, setMeters] = useState([]);
   const [selectedMeter, setSelectedMeter] = useState('');
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [consumption, setConsumption] = useState({ kwh: 0, referenceDate: null, referenceKwh: null });
@@ -26,18 +33,33 @@ export default function Today() {
   const fetchMeasures = useCallback(async (page = 1) => {
     setLoading(true);
     setError('');
+
+    if (isNaN(page) || page < 1) {
+      setError('Número de página inválido.');
+      setLoading(false);
+      return;
+    }
+
     try {
+      console.log(new Date().getTimezoneOffset(), new Date().toDateString());
       const params = {
-        date: new Date(),
+        date: new Date().toDateString(),
         page,
         limit: 10,
         timezoneOffset: new Date().getTimezoneOffset(),
         meterId: selectedMeter || undefined
       };
       const res = await axios.get('/consumptions', { params });
-      setMeasures(res.data.measures);
-      setPagination(res.data.pagination);
-      setConsumption(res.data.consumption);
+
+      const { measures: fetchedMeasures, pagination: fetchedPagination, consumption: fetchedConsumption } = res.data;
+
+      if (page > fetchedPagination.totalPages && fetchedPagination.totalPages > 0) {
+        setError(`La página ${page} no existe. Para hoy solo hay ${fetchedPagination.totalPages} páginas.`);
+      }
+
+      setMeasures(fetchedMeasures);
+      setPagination(fetchedPagination);
+      setConsumption(fetchedConsumption);
     } catch (err) {
       setError('No se pudieron cargar los registros de hoy.');
     } finally {
@@ -45,17 +67,14 @@ export default function Today() {
     }
   }, [selectedMeter]);
 
-  useEffect(() => {
-    fetchMeters();
-  }, []);
-
-  useEffect(() => {
-    fetchMeasures(1);
-  }, [fetchMeasures]);
+  useEffect(() => { fetchMeters(); }, []);
+  useEffect(() => { fetchMeasures(pagination.page); }, [pagination.page]);
+  useEffect(() => { handlePageChange(1); }, [selectedMeter]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
-      fetchMeasures(newPage);
+      setPagination({ ...pagination, page: newPage });
+      navigate(`/consumptions/today/${newPage}`);
     }
   };
 
@@ -89,7 +108,7 @@ export default function Today() {
         </div>
         <select
           value={selectedMeter}
-          onChange={(e) => setSelectedMeter(e.target.value)}
+          onChange={(e) => { setSelectedMeter(e.target.value); }}
           className="input-field w-full sm:w-auto py-1.5 text-sm"
         >
           <option value="">Todos los medidores</option>
@@ -118,9 +137,18 @@ export default function Today() {
       {/* Results */}
       <div className="glass-card">
         {error && (
-          <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3 mb-6">
-            <AlertCircle className="w-5 h-5 shrink-0" />
-            <span className="text-sm">{error}</span>
+          <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-4 mb-6">
+            <div className="flex items-center gap-3 mb-3">
+              <AlertCircle className="w-5 h-5 shrink-0" />
+              <span className="text-sm font-medium">{error}</span>
+            </div>
+            <Link
+              to="/consumptions/today/1"
+              className="inline-flex items-center gap-2 text-xs font-semibold bg-red-500/20 hover:bg-red-500/30 px-3 py-1.5 rounded-lg transition-colors border border-red-500/20"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Ir a la primera página
+            </Link>
           </div>
         )}
 

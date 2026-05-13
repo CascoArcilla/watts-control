@@ -1,6 +1,21 @@
 const { Op } = require('sequelize');
 const { Meter, Measure, User, Group } = require('../models');
 
+/**
+ * Calculates the UTC start and end of a local date string
+ * @param {Date} dateClient Date in local format
+ * @param {Integer} offsetMs Timezone offset in milliseconds
+ * @returns {{start: string, end: string}}
+ */
+const getUtcBounds = (dateClient) => {
+  const utcStart = new Date(dateClient);
+  const utcEnd = new Date(utcStart.getTime() + (24 * 60 * 60 * 1000) - 1);
+  return {
+    start: utcStart.toISOString(),
+    end: utcEnd.toISOString()
+  };
+}
+
 // Helper to get accessible meter IDs for a user
 const getAccessibleMeterIds = async (userId, userGroups) => {
   const isAdmin = userGroups.includes('Administrador');
@@ -30,11 +45,8 @@ const getAccessibleMeterIds = async (userId, userGroups) => {
 
 exports.getMeasures = async (req, res) => {
   try {
-    const { page = 1, limit = 10, meterId, date, startDate, endDate, timezoneOffset = 0 } = req.query;
+    const { page = 1, limit = 10, meterId, date, startDate, endDate } = req.query;
     const offset = (page - 1) * limit;
-
-    // Convert timezoneOffset from minutes to milliseconds and invert it
-    const offsetInMs = parseInt(timezoneOffset) * 60000 * -1;
 
     const accessibleMeterIds = await getAccessibleMeterIds(req.userId, req.userGroups);
 
@@ -53,25 +65,13 @@ exports.getMeasures = async (req, res) => {
       where.meterId = meterId;
     }
 
-    // Helper function to get UTC start and end of a local day
-    const getUtcBounds = (dateStr, offsetMs) => {
-      const d = new Date(dateStr);
-      // d is typically UTC 00:00:00 for "YYYY-MM-DD"
-      const utcStart = d.getTime() + offsetMs;
-      const utcEnd = utcStart + (24 * 60 * 60 * 1000) - 1;
-      return {
-        start: new Date(utcStart).toISOString(),
-        end: new Date(utcEnd).toISOString()
-      };
-    };
-
     // Filter by date
     if (date) {
-      const { start, end } = getUtcBounds(date, offsetInMs);
+      const { start, end } = getUtcBounds(date);
       where.createdAt = { [Op.between]: [start, end] };
     } else if (startDate && endDate) {
-      const { start } = getUtcBounds(startDate, offsetInMs);
-      const { end } = getUtcBounds(endDate, offsetInMs);
+      const { start } = getUtcBounds(startDate);
+      const { end } = getUtcBounds(endDate);
       where.createdAt = { [Op.between]: [start, end] };
     }
 
@@ -107,7 +107,7 @@ exports.getMeasures = async (req, res) => {
     if (date && meterId) {
       const kwhToday = parseInt(rows[0]?.watts) || null;
 
-      const { start: startDayUtc } = getUtcBounds(date, offsetInMs);
+      const { start: startDayUtc } = getUtcBounds(date);
       // Find the more recent measure before the indicate date
       const lastMeasure = await Measure.findOne({
         where: {
@@ -215,3 +215,5 @@ exports.register = async (request, response) => {
     });
   }
 }
+
+exports.getUtcBounds = getUtcBounds;

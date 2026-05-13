@@ -1,17 +1,24 @@
 import { useState, useEffect, useCallback } from 'react';
-import { UserIcon, Plus, Filter, ChevronLeft, ChevronRight, Zap, RefreshCw, AlertCircle, Calendar } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Plus, Filter, Zap, RefreshCw, AlertCircle, Calendar, ArrowLeft } from 'lucide-react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ItemRegister from './ItemRegister';
 import Pagination from './Pagination';
 
 export default function History() {
+  const { page: pageParam } = useParams();
+  const navigate = useNavigate();
+  const [pagination, setPagination] = useState({
+    page: parseInt(pageParam) || 1,
+    totalPages: 1,
+    total: 0
+  });
+
   const [measures, setMeasures] = useState([]);
   const [meters, setMeters] = useState([]);
   const [selectedMeter, setSelectedMeter] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -27,6 +34,13 @@ export default function History() {
   const fetchMeasures = useCallback(async (page = 1) => {
     setLoading(true);
     setError('');
+
+    if (isNaN(page) || page < 1) {
+      setError('Número de página inválido.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const params = {
         page,
@@ -37,8 +51,15 @@ export default function History() {
         timezoneOffset: new Date().getTimezoneOffset(),
       };
       const res = await axios.get('/consumptions', { params });
-      setMeasures(res.data.measures);
-      setPagination(res.data.pagination);
+
+      const { measures: fetchedMeasures, pagination: fetchedPagination } = res.data;
+
+      if (page > fetchedPagination.totalPages && fetchedPagination.totalPages > 0) {
+        setError(`La página ${page} no existe. El historial solo tiene ${fetchedPagination.totalPages} páginas.`);
+      }
+
+      setMeasures(fetchedMeasures);
+      setPagination(fetchedPagination);
     } catch (err) {
       setError('No se pudo cargar el historial de consumos.');
     } finally {
@@ -46,17 +67,30 @@ export default function History() {
     }
   }, [selectedMeter, startDate, endDate]);
 
-  useEffect(() => {
-    fetchMeters();
-  }, []);
+  useEffect(() => { fetchMeters(); }, []);
+
+  useEffect(() => { fetchMeasures(pagination.page); }, [pagination.page]);
 
   useEffect(() => {
-    fetchMeasures(1);
-  }, [fetchMeasures]);
+    if (pagination.page > 1) handlePageChange(1);
+    else fetchMeasures();
+  }, [selectedMeter]);
+
+  useEffect(() => {
+    if (startDate === '' || endDate === '') return;
+    if (startDate > endDate) {
+      setError('La fecha de inicio no puede ser mayor a la fecha de fin.');
+      return;
+    }
+
+    if (pagination.page > 1) handlePageChange(1);
+    else fetchMeasures();
+  }, [startDate, endDate]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
-      fetchMeasures(newPage);
+      setPagination({ ...pagination, page: newPage });
+      navigate(`/consumptions/history/${newPage}`);
     }
   };
 
@@ -134,9 +168,11 @@ export default function History() {
       {/* Content */}
       <div className="glass-card">
         {error && (
-          <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3 mb-6">
-            <AlertCircle className="w-5 h-5 shrink-0" />
-            <span className="text-sm">{error}</span>
+          <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-4 mb-6">
+            <div className="flex items-center gap-3 mb-3">
+              <AlertCircle className="w-5 h-5 shrink-0" />
+              <span className="text-sm font-medium">{error}</span>
+            </div>
           </div>
         )}
 
