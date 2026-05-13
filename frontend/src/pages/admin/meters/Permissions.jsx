@@ -10,16 +10,16 @@ export default function MeterPermissions() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [meter, setMeter]               = useState(null);
-  const [authorized, setAuthorized]     = useState([]);
-  const [candidates, setCandidates]     = useState([]);
-  const [search, setSearch]             = useState('');
-  const [searching, setSearching]       = useState(false);
+  const [meter, setMeter] = useState(null);
+  const [authorized, setAuthorized] = useState([]);
+  const [candidates, setCandidates] = useState([]);
+  const [search, setSearch] = useState('');
+  const [searching, setSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [saving, setSaving]             = useState(false);
-  const [loading, setLoading]           = useState(true);
-  const [error, setError]               = useState('');
-  const [success, setSuccess]           = useState('');
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const searchRef = useRef(null);
   const debounceRef = useRef(null);
 
@@ -172,7 +172,7 @@ export default function MeterPermissions() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onFocus={() => { if (candidates.length > 0) setShowDropdown(true); }}
-                className="input-field pl-9"
+                className="input-field !pl-9"
                 placeholder="Buscar Lector o Propietario..."
                 autoComplete="off"
               />
