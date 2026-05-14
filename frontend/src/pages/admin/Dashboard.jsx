@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, Zap, TrendingUp, AlertCircle, ShieldCheck, ShieldAlert, Key, KeyRound, Activity, Battery, Hash } from 'lucide-react';
+import { Users, Zap, TrendingUp, AlertCircle, ShieldCheck, ShieldAlert, Key, KeyRound, Activity, Battery, Hash, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
 
 export default function AdminDashboard() {
@@ -10,7 +10,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get('/dashboard/stats');
+        const response = await axios.get('/dashboard/stats', { params: { date: new Date().toDateString() } });
         setData(response.data);
         setError(null);
       } catch (err) {
@@ -48,7 +48,14 @@ export default function AdminDashboard() {
   const stats = [
     { title: 'Total Usuarios', value: users?.total || 0, icon: Users, color: 'text-light-mint', bg: 'bg-light-mint/10' },
     { title: 'Total Medidores', value: meters?.total || 0, icon: Zap, color: 'text-medium-green', bg: 'bg-medium-green/10' },
-    { title: 'Consumo Mensual', value: `${consumption?.totalCurrentMonth || 0} kWh`, icon: TrendingUp, color: 'text-med-light-green', bg: 'bg-med-light-green/10' },
+    {
+      title: 'Consumo Mensual',
+      value: `${consumption?.totalCurrentMonth || 0} kWh`,
+      icon: TrendingUp,
+      color: consumption?.anyMeterMissingPrevious ? 'text-amber-400' : 'text-med-light-green',
+      bg: consumption?.anyMeterMissingPrevious ? 'bg-amber-400/10' : 'bg-med-light-green/10',
+      warning: consumption?.anyMeterMissingPrevious
+    },
   ];
 
   return (
@@ -69,8 +76,18 @@ export default function AdminDashboard() {
               <div className={`p-4 rounded-xl ${stat.bg}`}>
                 <Icon className={`w-8 h-8 ${stat.color}`} />
               </div>
-              <div>
-                <p className="text-gray-400 text-sm font-medium">{stat.title}</p>
+              <div className="flex-1">
+                <div className="flex items-center gap-1">
+                  <p className="text-gray-400 text-sm font-medium">{stat.title}</p>
+                  {stat.warning && (
+                    <span className="group relative cursor-help">
+                      <AlertTriangle className="w-4 h-4 text-amber-400" />
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-darkest border border-gray-green/20 text-xs text-gray-300 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-normal">
+                        Cálculo incompleto: Faltan registros del mes anterior para calcular el consumo exacto de algunos medidores.
+                      </div>
+                    </span>
+                  )}
+                </div>
                 <h3 className="text-2xl font-bold text-white">{stat.value}</h3>
               </div>
             </div>
@@ -135,7 +152,17 @@ export default function AdminDashboard() {
                 <div className="flex items-center gap-2 mb-2 text-gray-400 group-hover:text-light-mint transition-colors">
                   <Hash className="w-4 h-4" /> <span className="text-sm font-medium">Medidor #{item.meterNumber}</span>
                 </div>
-                <div className="text-2xl font-bold text-white">{item.totalWatts.toLocaleString()} <span className="text-sm text-gray-500 font-normal">kWs</span></div>
+                <div className="flex items-center justify-between">
+                  <div className="text-2xl font-bold text-white">{item.totalWatts.toLocaleString()} <span className="text-sm text-gray-500 font-normal">kWs</span></div>
+                  {item.hasNoPreviousRecord && (
+                    <span className="group relative cursor-help">
+                      <AlertTriangle className="w-5 h-5 text-amber-400" />
+                      <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-darkest border border-gray-green/20 text-xs text-gray-300 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-normal z-[20]">
+                        Mostrando la última lectura en el mes porque no hay registro del mes anterior para calcular el delta.
+                      </div>
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
