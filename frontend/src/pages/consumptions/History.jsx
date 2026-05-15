@@ -98,8 +98,8 @@ export default function History() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Historial de Consumo</h1>
-          <p className="text-gray-400 text-sm mt-1">Consulta todos los registros históricos del sistema.</p>
+          <h1 className="text-xl md:text-2xl font-bold text-white">Historial de Consumo</h1>
+          <p className="text-gray-400 text-xs md:text-sm mt-0.5">Consulta todos los registros históricos del sistema.</p>
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
@@ -128,11 +128,11 @@ export default function History() {
             <select
               value={selectedMeter}
               onChange={(e) => setSelectedMeter(e.target.value)}
-              className="input-field py-1.5 text-sm"
+              className="input-field py-1.5 text-xs sm:text-sm truncate"
             >
               <option value="">Todos los medidores</option>
               {meters.map((meter) => (
-                <option key={meter.id} value={meter.id} className="bg-darkest text-white">
+                <option key={meter.id} value={meter.id}>
                   Medidor #{meter.number_meter} - {meter.User?.first_name} {meter.User?.last_name}
                 </option>
               ))}

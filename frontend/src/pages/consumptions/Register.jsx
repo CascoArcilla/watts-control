@@ -65,8 +65,8 @@ export default function RegisterConsumption() {
           <ArrowLeft className="w-5 h-5 text-gray-300" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-white">Registrar Consumo</h1>
-          <p className="text-gray-400 text-sm mt-1">Ingresa los watts consumidos para el período actual.</p>
+          <h1 className="text-xl md:text-2xl font-bold text-white">Registrar Consumo</h1>
+          <p className="text-gray-400 text-xs md:text-sm mt-0.5">Ingresa los watts consumidos para el período actual.</p>
         </div>
       </div>
 
@@ -85,14 +85,14 @@ export default function RegisterConsumption() {
       )}
 
       <div className="glass-card">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
           <div className="grid grid-cols-1 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Medidor</label>
               <select
                 value={meter.id}
                 onChange={changeSelectMeter}
-                className="input-field"
+                className="input-field py-1.5 text-xs sm:text-sm truncate"
                 disabled={loading}
                 required
               >

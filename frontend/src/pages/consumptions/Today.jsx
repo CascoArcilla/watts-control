@@ -84,8 +84,8 @@ export default function Today() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Registros de Hoy</h1>
-          <p className="text-gray-400 text-sm mt-1">Aquí puedes ver los registros de consumo en el día.</p>
+          <h1 className="text-xl md:text-2xl font-bold text-white">Registros de Hoy</h1>
+          <p className="text-gray-400 text-xs md:text-sm mt-0.5">Aquí puedes ver los registros de consumo en el día.</p>
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
@@ -103,8 +103,8 @@ export default function Today() {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-4 bg-dark/30 p-4 rounded-xl border border-gray-green/10">
-        <div className="flex items-center gap-2 text-gray-400">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 bg-dark/30 p-4 rounded-xl border border-gray-green/10">
+        <div className="flex items-center gap-2 text-gray-400 shrink-0">
           <Filter className="w-4 h-4" />
           <span className="text-sm font-medium">Filtrar:</span>
         </div>
@@ -115,7 +115,7 @@ export default function Today() {
         >
           <option value="">Todos los medidores</option>
           {meters.map((meter) => (
-            <option key={meter.id} value={meter.id} className="bg-darkest text-white">
+            <option key={meter.id} value={meter.id}>
               Medidor #{meter.number_meter} - {meter.User?.first_name} {meter.User?.last_name}
             </option>
           ))}
@@ -124,15 +124,21 @@ export default function Today() {
 
       {/* Consumption Card */}
       {consumption && consumption.kwh && (
-        <div className="glass-card p-4">
+        <div className="glass-card">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-gray-400">
-              <Zap className="w-4 h-4" />
-              <span className="text-md text-gray-300">Consumo:</span>
+              <Zap className="w-4 h-4 text-light-mint" />
+              <span className="text-sm md:text-md text-gray-300 font-medium">Consumo:</span>
             </div>
-            <p className="text-xl font-bold text-white">{consumption.kwh} kWh</p>
+            <p className="text-lg md:text-xl font-bold text-white">{consumption.kwh} kWh</p>
           </div>
-          <p className="text-sm text-gray-400">Desde: {new Date(consumption.referenceDate).toLocaleDateString()} {new Date(consumption.referenceDate).toLocaleTimeString()}hrs ({consumption.referenceKwh} kWh)</p>
+          <div className="mt-2 pt-2 border-t border-gray-green/10">
+            <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wider mb-1">Referencia Anterior</p>
+            <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
+              {new Date(consumption.referenceDate).toLocaleDateString()} {new Date(consumption.referenceDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}hrs 
+              <span className="text-white font-medium ml-1">({consumption.referenceKwh} kWh)</span>
+            </p>
+          </div>
         </div>
       )}
 
