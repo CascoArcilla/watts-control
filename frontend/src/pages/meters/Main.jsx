@@ -5,22 +5,22 @@ import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 
 const statusLabel = (s) => s === 'active' ? 'Activo' : 'Inactivo';
-const fullName    = (u) => u ? [u.first_name, u.last_name].filter(Boolean).join(' ') : '—';
+const fullName = (u) => u ? [u.first_name, u.last_name].filter(Boolean).join(' ') : '—';
 
 export default function MetersMain() {
   const { hasRole } = useAuth();
-  const canAddMeter       = hasRole('Administrador');
-  const canManagePerms    = hasRole('Administrador');
+  const canAddMeter = hasRole('Administrador');
+  const canManagePerms = hasRole('Administrador');
 
-  const [meters, setMeters]   = useState([]);
+  const [meters, setMeters] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState('');
+  const [error, setError] = useState('');
 
   const fetchMeters = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get('/meters');
+      const res = await axios.get('/meters', { params: { includeLastMeasure: true } });
       setMeters(res.data.meters);
     } catch {
       setError('No se pudo cargar la lista de medidores.');
@@ -118,6 +118,20 @@ export default function MetersMain() {
                   <span className="text-gray-500 text-xs uppercase tracking-wide">Propietario</span>
                   <p className="text-white font-medium mt-0.5">{fullName(meter.User)}</p>
                 </div>
+
+                {/* Last Measure */}
+                {meter.lastMeasure && (
+                  <div className="text-sm text-gray-400">
+                    <span className="text-gray-500 text-xs uppercase tracking-wide">Última Lectura</span>
+                    <p className="text-white font-medium mt-0.5">
+                      <span className="text-light-mint font-bold">{meter.lastMeasure.watts.toLocaleString()}</span>
+                      <span className="text-[10px] text-gray-500 ml-1">kWs</span>
+                    </p>
+                    <p className="text-[10px] text-gray-500">
+                      {new Date(meter.lastMeasure.createdAt).toLocaleDateString()} {new Date(meter.lastMeasure.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                )}
 
                 {/* Footer */}
                 <div className="mt-auto pt-4 border-t border-gray-green/20 flex items-center justify-between gap-2">

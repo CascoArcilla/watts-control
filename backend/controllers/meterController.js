@@ -7,11 +7,13 @@ exports.getOwners = async (req, res) => {
     const search = req.query.search ? req.query.search.trim() : '';
 
     const where = search
-      ? { [Op.or]: [
+      ? {
+        [Op.or]: [
           { first_name: { [Op.like]: `%${search}%` } },
-          { last_name:  { [Op.like]: `%${search}%` } },
-          { username:   { [Op.like]: `%${search}%` } },
-        ]}
+          { last_name: { [Op.like]: `%${search}%` } },
+          { username: { [Op.like]: `%${search}%` } },
+        ]
+      }
       : {};
 
     const propietarioGroup = await Group.findOne({ where: { name: 'Propietario' } });
@@ -76,8 +78,8 @@ exports.getMeters = async (req, res) => {
     const userId = req.userId;
     const userGroups = req.userGroups;
 
-    const isAdmin      = userGroups.includes('Administrador');
-    const isLector     = userGroups.includes('Lector');
+    const isAdmin = userGroups.includes('Administrador');
+    const isLector = userGroups.includes('Lector');
     const isPropietario = userGroups.includes('Propietario');
 
     let meters = [];
@@ -121,7 +123,23 @@ exports.getMeters = async (req, res) => {
       meters = Array.from(meterMap.values());
     }
 
-    return res.json({ meters });
+    let resopnseJson = meters;
+    const { includeLastMeasure } = req.query;
+
+    if (includeLastMeasure) {
+      // Fetch the last measure for each meter
+      resopnseJson = await Promise.all(meters.map(async (m) => {
+        const lastMeasure = await Measure.findOne({
+          where: { meterId: m.id },
+          order: [['createdAt', 'DESC']],
+          attributes: ['watts', 'createdAt']
+        });
+        const meterJson = m.toJSON ? m.toJSON() : m;
+        return { ...meterJson, lastMeasure };
+      }));
+    }
+
+    return res.json({ meters: resopnseJson });
   } catch (error) {
     console.error('getMeters error:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
@@ -173,11 +191,13 @@ exports.getCandidates = async (req, res) => {
     const search = req.query.search ? req.query.search.trim() : '';
 
     const where = search
-      ? { [Op.or]: [
+      ? {
+        [Op.or]: [
           { first_name: { [Op.like]: `%${search}%` } },
-          { last_name:  { [Op.like]: `%${search}%` } },
-          { username:   { [Op.like]: `%${search}%` } },
-        ]}
+          { last_name: { [Op.like]: `%${search}%` } },
+          { username: { [Op.like]: `%${search}%` } },
+        ]
+      }
       : {};
 
     const [lectorGroup, propietarioGroup] = await Promise.all([
