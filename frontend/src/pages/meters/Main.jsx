@@ -36,8 +36,8 @@ export default function MetersMain() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Medidores</h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <h1 className="text-xl md:text-2xl font-bold text-white">Medidores</h1>
+          <p className="text-gray-400 text-xs md:text-sm mt-0.5">
             {loading ? 'Cargando...' : `${meters.length} medidor${meters.length !== 1 ? 'es' : ''} disponible${meters.length !== 1 ? 's' : ''}`}
           </p>
         </div>
@@ -94,7 +94,7 @@ export default function MetersMain() {
           {meters.map((meter) => {
             const isActive = meter.status_meter === 'active';
             return (
-              <div key={meter.id} className="glass-card group relative overflow-hidden flex flex-col gap-4">
+              <div key={meter.id} className="glass-card group relative overflow-hidden flex flex-col gap-3 md:gap-4">
                 {/* Decorative blob */}
                 <div className="absolute top-0 right-0 w-24 h-24 bg-light-mint/10 rounded-bl-full -z-10 transition-transform group-hover:scale-110" />
 
@@ -138,7 +138,7 @@ export default function MetersMain() {
                   <Link
                     to="/consumptions/register"
                     state={{ meterId: meter.id, meterNumber: meter.number_meter }}
-                    className="text-light-mint hover:underline flex items-center gap-1 text-xs"
+                    className="text-light-mint hover:underline flex items-center gap-1 text-[10px] sm:text-xs"
                   >
                     <BarChart2 className="w-3 h-3" />
                     Registrar consumo
@@ -146,7 +146,7 @@ export default function MetersMain() {
                   {canManagePerms && (
                     <Link
                       to={`/admin/meters/${meter.id}/permissions`}
-                      className="text-light-mint hover:underline flex items-center gap-1 text-xs"
+                      className="text-light-mint hover:underline flex items-center gap-1 text-[10px] sm:text-xs"
                       title="Gestionar permisos"
                     >
                       <Shield className="w-3 h-3" />

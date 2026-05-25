@@ -103,11 +103,11 @@ export default function CreateUser() {
           <ChevronLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <UserPlus className="w-6 h-6 text-light-mint" />
+          <h1 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+            <UserPlus className="w-5 h-5 md:w-6 md:h-6 text-light-mint" />
             Crear Usuario
           </h1>
-          <p className="text-gray-400 text-sm mt-0.5">Completa los datos para registrar un nuevo usuario.</p>
+          <p className="text-gray-400 text-xs md:text-sm mt-0.5">Completa los datos para registrar un nuevo usuario.</p>
         </div>
       </div>
 

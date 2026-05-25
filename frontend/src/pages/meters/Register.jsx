@@ -34,7 +34,19 @@ export default function RegisterMeter() {
   // Debounced owner search
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (!search.trim()) { setOwners([]); setShowDropdown(false); return; }
+
+    // Don't search if the search text matches the selected owner's name
+    const currentOwnerName = owner ? `${owner.first_name} ${owner.last_name || ''}`.trim() : '';
+    if (owner && search === currentOwnerName) {
+      setShowDropdown(false);
+      return;
+    }
+
+    if (!search.trim()) {
+      setOwners([]);
+      setShowDropdown(false);
+      return;
+    }
 
     debounceRef.current = setTimeout(async () => {
       setSearching(true);
@@ -48,7 +60,7 @@ export default function RegisterMeter() {
         setSearching(false);
       }
     }, 350);
-  }, [search]);
+  }, [search, owner]);
 
   const selectOwner = (user) => {
     setOwner(user);
@@ -94,8 +106,8 @@ export default function RegisterMeter() {
           <ArrowLeft className="w-5 h-5 text-gray-300" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Zap className="w-6 h-6 text-light-mint" />
+          <h1 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+            <Zap className="w-5 h-5 md:w-6 md:h-6 text-light-mint" />
             Registrar Nuevo Medidor
           </h1>
           <p className="text-gray-400 text-sm mt-1">Añade un nuevo medidor al sistema.</p>
@@ -117,7 +129,7 @@ export default function RegisterMeter() {
       )}
 
       <div className="glass-card">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
 
           {/* Número de medidor */}
           <div className="space-y-1.5">

@@ -1,21 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Zap, Activity, Shield, LogOut, Clock, Users, UserPlus, History } from 'lucide-react';
+import { LogOut, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { navigationLinks } from './nav/navigation';
 
 export default function Sidebar() {
   const location = useLocation();
   const { logout, roles } = useAuth();
 
-  const links = [
-    { name: 'Admin Dashboard', path: '/admin', icon: Shield, roles: ['Administrador'] },
-    { name: 'Usuarios', path: '/admin/users', icon: Users, roles: ['Administrador'] },
-    { name: 'Crear Usuario', path: '/admin/users/create', icon: UserPlus, roles: ['Administrador'] },
-    { name: 'Registrar Medidor', path: '/meters/register', icon: Zap, roles: ['Administrador'] },
-    { name: 'Medidores', path: '/meters', icon: Clock },
-    { name: 'Registros de Hoy', path: '/consumptions/today', icon: Home },
-    { name: 'Historial de Registros', path: '/consumptions/history', icon: History },
-    { name: 'Registrar Consumo', path: '/consumptions/register', icon: Activity },
-  ];
 
   return (
     <div className="w-64 glass border-r border-gray-green/20 flex flex-col justify-between hidden md:flex">
@@ -25,7 +16,7 @@ export default function Sidebar() {
           <h1 className="text-xl font-bold text-white tracking-wide">EC Control</h1>
         </div>
         <nav className="p-4 space-y-2 mt-4">
-          {links.map((link) => (
+          {navigationLinks.map((link) => (
             <SidebarLink key={link.name} link={link} userRoles={roles} location={location} />
           ))}
         </nav>

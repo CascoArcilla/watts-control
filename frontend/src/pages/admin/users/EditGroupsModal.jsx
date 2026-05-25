@@ -41,8 +41,8 @@ export default function EditGroupsModal({ user, availableGroups, onClose, onSucc
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-darkest/80 backdrop-blur-sm p-4">
       <div className="bg-dark/80 border border-gray-green/20 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-green/20">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-green/20">
+          <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
             <ShieldAlert className="w-5 h-5 text-medium-green" />
             Gestionar Grupos
           </h2>
@@ -51,7 +51,7 @@ export default function EditGroupsModal({ user, availableGroups, onClose, onSucc
           </button>
         </div>
         
-        <div className="p-6 overflow-y-auto">
+        <div className="p-4 sm:p-6 overflow-y-auto">
           <p className="text-sm text-gray-300 mb-4">
             Grupos para el usuario <span className="font-bold text-light-mint">@{user.username}</span>
           </p>

@@ -118,15 +118,18 @@ export default function MeterPermissions() {
           <ArrowLeft className="w-5 h-5 text-gray-300" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Shield className="w-6 h-6 text-light-mint" />
+          <h1 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+            <Shield className="w-5 h-5 md:w-6 md:h-6 text-light-mint" />
             Permisos del Medidor
           </h1>
           {meter && (
-            <p className="text-gray-400 text-sm mt-0.5 flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-light-mint" />
-              Medidor #{meter.number_meter}
-              {meter.User && <span className="text-gray-500">— Propietario: {fullName(meter.User)}</span>}
+            <p className="text-gray-400 text-xs md:text-sm mt-0.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
+              <span className="flex items-center gap-1">
+                <Zap className="w-3.5 h-3.5 text-light-mint" />
+                Medidor #{meter.number_meter}
+              </span>
+              {meter.User && <span className="text-gray-500 hidden sm:inline">—</span>}
+              {meter.User && <span className="text-gray-500 italic sm:not-italic">Propietario: {fullName(meter.User)}</span>}
             </p>
           )}
         </div>

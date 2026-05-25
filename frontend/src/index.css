@@ -22,7 +22,7 @@
     @apply bg-dark/40 backdrop-blur-md border border-gray-green/20 shadow-lg;
   }
   .glass-card {
-    @apply bg-dark/40 backdrop-blur-md border border-gray-green/20 shadow-lg rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:border-light-mint/30;
+    @apply bg-dark/40 backdrop-blur-md border border-gray-green/20 shadow-lg rounded-2xl p-4 md:p-6 transition-all duration-300 hover:shadow-xl hover:border-light-mint/30;
   }
   .btn-primary {
     @apply bg-light-mint text-darkest font-semibold py-2 px-4 rounded-lg transition-colors duration-200 hover:bg-medium-green hover:text-white shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-light-mint/50 disabled:opacity-50 disabled:cursor-not-allowed;
@@ -32,5 +32,16 @@
   }
   .input-field {
     @apply w-full bg-darkest/50 border border-gray-green/30 rounded-lg px-4 py-2.5 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-light-mint focus:ring-1 focus:ring-light-mint transition-colors;
+  }
+  select.input-field {
+    @apply bg-darkest border-gray-green/40 text-white cursor-pointer appearance-none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239AE19D' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.25rem;
+    padding-right: 2.5rem;
+  }
+  select.input-field option {
+    @apply bg-darkest text-white;
   }
 }

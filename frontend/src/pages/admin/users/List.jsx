@@ -2,13 +2,16 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import {
-  Users, UserPlus, ChevronLeft, ChevronRight,
-  Shield, Eye, EyeOff, AlertCircle, RefreshCw,
-  Edit, ShieldAlert, UserX, LockKeyhole, LockKeyholeOpen
+  Users, UserPlus, Shield, AlertCircle, RefreshCw
 } from 'lucide-react';
+
 import EditUserModal from './EditUserModal';
 import EditGroupsModal from './EditGroupsModal';
 import BlockUnblockUserModal from './BlockUnblockUserModal';
+
+import UserTable from './UserTable';
+import UserCardList from './UserCardList';
+import UserPagination from './UserPagination';
 
 const GROUP_COLORS = {
   'Administrador': 'bg-purple-500/15 text-purple-300 border-purple-500/30',
@@ -68,17 +71,17 @@ export default function UserList() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Users className="w-6 h-6 text-light-mint" />
+          <h1 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+            <Users className="w-5 h-5 md:w-6 md:h-6 text-light-mint" />
             Usuarios
           </h1>
-          <p className="text-gray-400 text-sm mt-0.5">
-            {pagination.total} usuario{pagination.total !== 1 ? 's' : ''} registrado{pagination.total !== 1 ? 's' : ''} en el sistema.
+          <p className="text-gray-400 text-xs md:text-sm mt-0.5">
+            {pagination.total} usuario{pagination.total !== 1 ? 's' : ''} registrado{pagination.total !== 1 ? 's' : ''}.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
             id="refresh_users"
             onClick={() => fetchUsers(pagination.page)}
@@ -87,7 +90,7 @@ export default function UserList() {
           >
             <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
           </button>
-          <Link to="/admin/users/create" className="btn-primary flex items-center gap-2 text-sm">
+          <Link to="/admin/users/create" className="btn-primary flex items-center gap-2 text-sm flex-1 sm:flex-none justify-center">
             <UserPlus className="w-4 h-4" />
             Crear Usuario
           </Link>
@@ -102,158 +105,33 @@ export default function UserList() {
         </div>
       )}
 
-      {/* Table */}
-      <div className="glass-card overflow-hidden p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-green/20 bg-darkest/40">
-                <th className="text-left px-6 py-4 text-gray-400 font-semibold">Usuario</th>
-                <th className="text-left px-6 py-4 text-gray-400 font-semibold">Username</th>
-                <th className="text-left px-6 py-4 text-gray-400 font-semibold">Grupos</th>
-                <th className="text-center px-6 py-4 text-gray-400 font-semibold">Contraseña</th>
-                <th className="text-right px-6 py-4 text-gray-400 font-semibold">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading && (
-                <tr>
-                  <td colSpan={5} className="text-center py-12">
-                    <div className="flex flex-col items-center gap-3 text-gray-500">
-                      <div className="w-8 h-8 border-2 border-light-mint border-t-transparent rounded-full animate-spin" />
-                      <span>Cargando usuarios...</span>
-                    </div>
-                  </td>
-                </tr>
-              )}
-              {!loading && users.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="text-center py-12 text-gray-500">
-                    No hay usuarios registrados.
-                  </td>
-                </tr>
-              )}
-              {!loading && users.map((user, idx) => (
-                <tr
-                  key={user.id}
-                  className={`border-b border-gray-green/10 hover:bg-dark/30 transition-colors ${idx % 2 === 0 ? '' : 'bg-darkest/10'}`}
-                >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-medium-green/30 flex items-center justify-center shrink-0">
-                        <span className="text-sm font-bold text-light-mint uppercase">
-                          {user.first_name?.[0] || '?'}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="font-medium text-white">
-                          {[user.first_name, user.last_name].filter(Boolean).join(' ')}
-                        </p>
-                        <p className="text-xs text-gray-500">ID #{user.id}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-300 font-mono text-xs">@{user.username}</td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-1.5">
-                      {user.Groups?.length > 0
-                        ? user.Groups.map(g => groupBadge(g.name))
-                        : <span className="text-xs text-gray-600 italic">Sin grupos</span>
-                      }
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    {user.use_password
-                      ? <Eye className="w-4 h-4 text-light-mint mx-auto" title="Usa contraseña" />
-                      : <EyeOff className="w-4 h-4 text-gray-600 mx-auto" title="Sin contraseña" />
-                    }
-                  </td>
-                  <td className="px-6 py-4 text-right space-x-2">
-                    <button
-                      onClick={() => setEditingUser(user)}
-                      className="p-2 bg-dark/50 hover:bg-light-mint hover:text-darkest text-light-mint rounded-lg transition-colors inline-flex"
-                      title="Editar Usuario"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setEditingGroupsUser(user)}
-                      className="p-2 bg-dark/50 hover:bg-light-mint hover:text-darkest text-light-mint rounded-lg transition-colors inline-flex"
-                      title="Gestionar Grupos"
-                    >
-                      <ShieldAlert className="w-4 h-4" />
-                    </button>
-                    {user.is_bloked ? (
-                      <button
-                        onClick={() => setBlockUnblockUser(user)}
-                        className="p-2 bg-dark/50 hover:bg-red-500/15 hover:text-red-500 text-red-500 rounded-lg transition-colors inline-flex"
-                        title="Desbloquear Usuario"
-                      >
-                        <LockKeyhole className="w-4 h-4" />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => setBlockUnblockUser(user)}
-                        className="p-2 bg-dark/50 hover:bg-light-mint hover:text-darkest text-light-mint rounded-lg transition-colors inline-flex"
-                        title="Bloquear Usuario"
-                      >
-                        <LockKeyholeOpen className="w-4 h-4" />
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Main Content */}
+      <div className="space-y-4">
+        <UserTable
+          users={users}
+          loading={loading}
+          groupBadge={groupBadge}
+          onEdit={setEditingUser}
+          onEditGroups={setEditingGroupsUser}
+          onBlockUnblock={setBlockUnblockUser}
+        />
 
-        {/* Pagination */}
-        {pagination.totalPages > 1 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-gray-green/20">
-            <p className="text-sm text-gray-500">
-              Página {pagination.page} de {pagination.totalPages}
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                id="prev_page"
-                onClick={() => goToPage(pagination.page - 1)}
-                disabled={pagination.page <= 1}
-                className="p-2 rounded-lg text-gray-400 hover:text-light-mint hover:bg-dark/50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
+        <UserCardList
+          users={users}
+          loading={loading}
+          groupBadge={groupBadge}
+          onEdit={setEditingUser}
+          onEditGroups={setEditingGroupsUser}
+          onBlockUnblock={setBlockUnblockUser}
+        />
 
-              {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
-                .filter(p => Math.abs(p - pagination.page) <= 2)
-                .map(p => (
-                  <button
-                    key={p}
-                    id={`page_${p}`}
-                    onClick={() => goToPage(p)}
-                    className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
-                      p === pagination.page
-                        ? 'bg-light-mint text-darkest'
-                        : 'text-gray-400 hover:bg-dark/50 hover:text-light-mint'
-                    }`}
-                  >
-                    {p}
-                  </button>
-                ))
-              }
-
-              <button
-                id="next_page"
-                onClick={() => goToPage(pagination.page + 1)}
-                disabled={pagination.page >= pagination.totalPages}
-                className="p-2 rounded-lg text-gray-400 hover:text-light-mint hover:bg-dark/50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        )}
+        <UserPagination
+          pagination={pagination}
+          onPageChange={goToPage}
+        />
       </div>
 
+      {/* Modals */}
       <EditUserModal
         user={editingUser}
         onClose={() => setEditingUser(null)}

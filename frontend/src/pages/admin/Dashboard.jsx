@@ -60,10 +60,10 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-end">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Resumen Administrativo</h1>
-          <p className="text-gray-400 text-sm mt-1">Vista general del sistema y consumos.</p>
+          <h1 className="text-xl md:text-2xl font-bold text-white">Resumen Administrativo</h1>
+          <p className="text-gray-400 text-xs md:text-sm mt-0.5">Vista general del sistema y consumos.</p>
         </div>
       </div>
 
@@ -99,7 +99,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
         {/* Users Info */}
         <div className="glass-card hover:border-light-mint/20 transition-colors">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          <h2 className="text-lg md:text-xl font-bold text-white mb-4 md:mb-6 flex items-center gap-2">
             <Users className="w-5 h-5 text-light-mint" /> Detalles de Usuarios
           </h2>
           <div className="space-y-4">
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
 
         {/* Meters Info */}
         <div className="glass-card hover:border-medium-green/20 transition-colors">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          <h2 className="text-lg md:text-xl font-bold text-white mb-4 md:mb-6 flex items-center gap-2">
             <Zap className="w-5 h-5 text-medium-green" /> Detalles de Medidores
           </h2>
           <div className="space-y-4">
@@ -142,8 +142,8 @@ export default function AdminDashboard() {
 
       {/* Consumption by Meter */}
       <div className="glass-card mt-6 hover:border-med-light-green/20 transition-colors">
-        <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-med-light-green" /> Consumo por Medidor (Mes Actual)
+        <h2 className="text-lg md:text-xl font-bold text-white mb-4 md:mb-6 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-med-light-green" /> Consumo por Medidor
         </h2>
         {consumption?.byMeterCurrentMonth?.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

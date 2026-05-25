@@ -77,8 +77,8 @@ export default function EditUserModal({ user, onClose, onSuccess }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-darkest/80 backdrop-blur-sm p-4">
       <div className="bg-dark/80 border border-gray-green/20 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-green/20">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-green/20">
+          <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
             <Edit className="w-5 h-5 text-light-mint" />
             Actualizar Usuario
           </h2>
@@ -87,9 +87,9 @@ export default function EditUserModal({ user, onClose, onSuccess }) {
           </button>
         </div>
 
-        <div className="p-6 overflow-y-auto">
+        <div className="p-4 sm:p-6 overflow-y-auto">
           {error && (
-            <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3 mb-6">
+            <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3 mb-4 sm:mb-6">
               <AlertCircle className="w-5 h-5 shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
