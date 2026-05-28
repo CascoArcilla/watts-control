@@ -3,6 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
+    const isMysql = queryInterface.sequelize.getDialect() === 'mysql';
     // Add UTC timestamp columns to Measures table
     await queryInterface.changeColumn('Measures', 'createdAt', {
       allowNull: false,
@@ -12,7 +13,7 @@ module.exports = {
     await queryInterface.changeColumn('Measures', 'updatedAt', {
       allowNull: false,
       type: Sequelize.DATE,
-      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+      defaultValue: isMysql ? Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP') : Sequelize.literal('CURRENT_TIMESTAMP')
     });
 
     // Add UTC timestamp columns to Groups table
@@ -24,7 +25,7 @@ module.exports = {
     await queryInterface.changeColumn('Groups', 'updatedAt', {
       allowNull: false,
       type: Sequelize.DATE,
-      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+      defaultValue: isMysql ? Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP') : Sequelize.literal('CURRENT_TIMESTAMP')
     });
   },
 

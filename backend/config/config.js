@@ -9,7 +9,7 @@ const configs = {
     database: process.env.EC_DB_NAME,
     host: process.env.EC_DB_HOST,
     port: process.env.EC_DB_PORT,
-    dialect: 'mysql',
+    dialect: process.env.EC_DB_DIALECT,
     timezone: '+00:00'
   },
   production: {
@@ -18,7 +18,7 @@ const configs = {
     database: process.env.EC_DB_NAME,
     host: process.env.EC_DB_HOST,
     port: process.env.EC_DB_PORT,
-    dialect: 'mysql',
+    dialect: process.env.EC_DB_DIALECT,
     logging: false,
     timezone: '+00:00'
   }
