@@ -22,4 +22,7 @@ router.get('/', ...authUsers, mc.getMeters);
 router.get('/:id/authorized', ...adminOnly, mc.getAuthorized);
 router.put('/:id/authorized', ...adminOnly, mc.setAuthorized);
 
+// Edit meter — admin only
+router.put('/:id', ...adminOnly, mc.updateMeter);
+
 module.exports = router;

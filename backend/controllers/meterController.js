@@ -227,3 +227,85 @@ exports.getCandidates = async (req, res) => {
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
+
+// PUT /api/meters/:id  — admin only
+exports.updateMeter = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { number_meter, userId, status_meter } = req.body;
+
+    const meter = await Meter.findByPk(id);
+    if (!meter) {
+      return res.status(404).json({ message: 'Medidor no encontrado.' });
+    }
+
+    // Validate number_meter if provided
+    if (number_meter !== undefined) {
+      if (!number_meter) {
+        return res.status(400).json({ message: 'El número de medidor no puede estar vacío.' });
+      }
+      const numVal = parseInt(number_meter);
+      if (isNaN(numVal) || numVal <= 0) {
+        return res.status(400).json({ message: 'El número de medidor debe ser un número positivo.' });
+      }
+
+      // Check duplicate
+      const duplicate = await Meter.findOne({
+        where: {
+          number_meter: numVal,
+          id: { [Op.ne]: id }
+        }
+      });
+      if (duplicate) {
+        return res.status(409).json({ message: `El número de medidor #${numVal} ya existe.` });
+      }
+      meter.number_meter = numVal;
+    }
+
+    // Validate status_meter if provided
+    if (status_meter !== undefined) {
+      if (!['active', 'inactive'].includes(status_meter)) {
+        return res.status(400).json({ message: 'Estatus del medidor inválido.' });
+      }
+      meter.status_meter = status_meter;
+    }
+
+    // Validate userId if provided
+    if (userId !== undefined) {
+      if (userId === null) {
+        meter.userId = null;
+      } else {
+        const user = await User.findByPk(userId);
+        if (!user) {
+          return res.status(400).json({ message: 'El propietario especificado no existe.' });
+        }
+        meter.userId = userId;
+      }
+    }
+
+    await meter.save();
+
+    // Reload meter with owner user
+    const updatedMeter = await Meter.findByPk(meter.id, {
+      include: [{ model: User, attributes: ['id', 'first_name', 'last_name', 'username'] }]
+    });
+
+    // Get last measure
+    const lastMeasure = await Measure.findOne({
+      where: { meterId: updatedMeter.id },
+      order: [['createdAt', 'DESC']],
+      attributes: ['watts', 'createdAt']
+    });
+
+    const meterJson = updatedMeter.toJSON();
+    meterJson.lastMeasure = lastMeasure;
+
+    return res.json({
+      message: 'Medidor actualizado exitosamente.',
+      meter: meterJson
+    });
+  } catch (error) {
+    console.error('updateMeter error:', error);
+    return res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+};
