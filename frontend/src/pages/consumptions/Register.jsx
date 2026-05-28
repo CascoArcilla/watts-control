@@ -99,7 +99,7 @@ export default function RegisterConsumption() {
                 <option value="" disabled>Selecciona un medidor</option>
                 {meters.map((m) => (
                   <option key={m.id} value={m.id}>
-                    #{m.number_meter} - {m.User.first_name} {m.User.last_name}
+                    #{m.number_meter} - {m.User?.first_name} {m.User?.last_name}
                   </option>
                 ))}
               </select>
