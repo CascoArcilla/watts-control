@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { Meter, Measure, User, Group } = require('../models');
+const { Meter, Measure, User } = require('../models');
 
 /**
  * Calculates the UTC start and end of a local date string
@@ -218,3 +218,4 @@ exports.register = async (request, response) => {
 }
 
 exports.getUtcBounds = getUtcBounds;
+exports.getAccessibleMeterIds = getAccessibleMeterIds;
