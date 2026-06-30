@@ -5,7 +5,7 @@ import AdminDashboard from './pages/admin/Dashboard';
 import CreateUser from './pages/admin/users/Create';
 import UserList from './pages/admin/users/List';
 import MeterPermissions from './pages/admin/meters/Permissions';
-import MetersMain from './pages/meters/Main';
+import MetersMain from './pages/meters/MetersMain';
 import RegisterMeter from './pages/meters/Register';
 import RegisterConsumption from './pages/consumptions/Register';
 import Today from './pages/consumptions/Today';
