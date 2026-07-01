@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"],
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+  "agent": {
+    "backend": {
+      "description": "Expert on the Express + Sequelize + MySQL backend. Routes, controllers, models, migrations, auth, middlewares.",
+      "mode": "subagent",
+      "prompt": ""
+    },
+    "frontend": {
+      "description": "Expert on the React + Vite + Tailwind CSS + React Router frontend. Components, pages, context, Axios, routing.",
+      "mode": "subagent",
+      "prompt": ""
+    }
+  }
+}

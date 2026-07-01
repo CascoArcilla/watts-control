@@ -10,6 +10,7 @@ import RegisterMeter from './pages/meters/Register';
 import RegisterConsumption from './pages/consumptions/Register';
 import Today from './pages/consumptions/Today';
 import History from './pages/consumptions/History';
+import NotFound from './pages/NotFound';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -39,6 +40,8 @@ function App() {
               </Route>
             </Route>
           </Route>
+
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </AuthProvider>
