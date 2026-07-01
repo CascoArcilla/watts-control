@@ -91,7 +91,7 @@ exports.checkInfoBill = async (req, res) => {
       oldMesure: moreOldMesure,
       recentMesure: moreRecentMesure,
       consumption: totalConsumition,
-      meter: moreOldMesure.meter
+      meter: moreOldMesure.Meter
     };
 
     res.status(200).json(responseJson);

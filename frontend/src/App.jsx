@@ -10,6 +10,7 @@ import RegisterMeter from './pages/meters/Register';
 import RegisterConsumption from './pages/consumptions/Register';
 import Today from './pages/consumptions/Today';
 import History from './pages/consumptions/History';
+import Bills from './pages/bills/Bills';
 import NotFound from './pages/NotFound';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -29,6 +30,7 @@ function App() {
               <Route path="consumptions/today/:page?" element={<Today />} />
               <Route path="consumptions/history/:page?" element={<History />} />
               <Route path="meters" element={<MetersMain />} />
+              <Route path="bills" element={<Bills />} />
 
               {/* Admin only */}
               <Route element={<ProtectedRoute allowedRoles={['Administrador']} />}>
