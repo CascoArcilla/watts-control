@@ -69,21 +69,23 @@ exports.checkInfoBill = async (req, res) => {
         error: 'Al parecer las medidas estan desfasadas, la medida reciente debe ser mayor a la medida mas antigua de las fechas dadas.',
         old: moreOldMesure,
         recent: moreRecentMesure,
-        difference: moreRecentMesure.watts - moreOldMesure.watts
+        consumption: moreRecentMesure.watts - moreOldMesure.watts
       });
     }
 
     if (moreRecentMesure.watts == moreOldMesure.watts) {
-      return res.status(404).json({
-        error: 'Las medidas son las mismas, no hay consumo en el periodo indicado',
+      return res.status(200).json({
+        message: 'Medidas iguales, no hay consumo en el periodo indicado',
         oldMesure: moreOldMesure.watts,
-        recentMesure: moreRecentMesure.watts
+        recentMesure: moreRecentMesure.watts,
+        consumption: 0
       });
     }
 
     let totalConsumition = moreRecentMesure.watts - moreOldMesure.watts;
 
     const responseJson = {
+      message: 'Informacion del consumo calculado en el periodo indicado',
       start: startDate,
       end: endDate,
       oldMesure: moreOldMesure,
@@ -92,7 +94,7 @@ exports.checkInfoBill = async (req, res) => {
       meter: moreOldMesure.meter
     };
 
-    res.json(responseJson);
+    res.status(200).json(responseJson);
   } catch (error) {
     console.error('getMeasures error:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
