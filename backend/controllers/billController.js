@@ -2,7 +2,7 @@ const { Op } = require('sequelize');
 const { getUtcBounds, getAccessibleMeterIds } = require("./mesureController");
 const { Meter, Measure, User } = require('../models');
 
-exports.getBill = async (req, res) => {
+exports.checkInfoBill = async (req, res) => {
   try {
     const { meterId, startDate, endDate } = req.query;
 

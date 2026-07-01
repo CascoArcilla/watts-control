@@ -1,10 +1,10 @@
 const { Router } = require('express');
 const router = Router();
-const { getBill } = require('../controllers/billController.js');
+const { checkInfoBill } = require('../controllers/billController');
 const { verifyToken } = require('../middleware/authMiddleware');
 
 const auth = [verifyToken];
 
-router.get('/', ...auth, getBill);
+router.get('/check-info', ...auth, checkInfoBill);
 
 module.exports = router;
