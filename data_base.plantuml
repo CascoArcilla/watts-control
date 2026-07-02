@@ -17,10 +17,24 @@ entity "User" as user {
   * updatedAt : date = Now()
 }
 
+entity "Fee" as fee
+{
+  + id [PK] : int <<auto_increment>>
+  --
+  * name : varchar(4) <<unique>>
+  * dca : double
+  * bs_limit : double
+  * bs_price : double
+  * md_limit : double
+  * md_price : double
+  * sp_price : double
+}
+
 entity "Meter" as meter {
   + id [PK] : int <<auto_increment>>
   --
   * number_meter : int <<unique>>
+  * feeId : int <<FK>>
   * userId : int <<FK>>
   * status_meter : enum('active', 'inactive') = 'active'
 }
@@ -89,5 +103,6 @@ group ||--o{ user_group
 meter ||--o{ bill
 meter ||--o{ measure
 meter ||--o{ user_meter
+meter ||--o{ fee
 
 @enduml
