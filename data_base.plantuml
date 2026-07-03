@@ -30,11 +30,23 @@ entity "Fee" as fee
   * sp_price : double
 }
 
+entity "FeeConf" as feeconf {
+  + id [PK] : int <<auto_increment>>
+  --
+  fee_id: int <<FK>>
+  meter_id: int <<FK>>
+  * dca : double <<NULL>>
+  * bs_limit : double <<NULL>>
+  * bs_price : double <<NULL>>
+  * md_limit : double <<NULL>>
+  * md_price : double <<NULL>>
+  * sp_price : double <<NULL>>
+}
+
 entity "Meter" as meter {
   + id [PK] : int <<auto_increment>>
   --
   * number_meter : int <<unique>>
-  * feeId : int <<FK>>
   * userId : int <<FK>>
   * status_meter : enum('active', 'inactive') = 'active'
 }
@@ -103,6 +115,8 @@ group ||--o{ user_group
 meter ||--o{ bill
 meter ||--o{ measure
 meter ||--o{ user_meter
-meter ||--o{ fee
+meter ||--|| feeconf
+
+fee ||--o{ feeconf
 
 @enduml
