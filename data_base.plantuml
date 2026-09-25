@@ -23,11 +23,6 @@ entity "Fee" as fee
   --
   * name : varchar(4) <<unique>>
   * dca : double
-  * bs_limit : double
-  * bs_price : double
-  * md_limit : double
-  * md_price : double
-  * sp_price : double
 }
 
 entity "FeeConf" as feeconf {
