@@ -3,11 +3,12 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
+    const schema = queryInterface.sequelize.options.schema || 'public';
     // 1. Cambiar tipo de dato de 'created_by' en la tabla 'Bills'
-    await queryInterface.changeColumn('Bills', 'created_by', {
+    await queryInterface.changeColumn({ tableName: 'Bills', schema }, 'created_by', {
       type: Sequelize.INTEGER,
       references: {
-        model: 'Users',
+        model: { tableName: 'Users', schema },
         key: 'id',
       },
       onUpdate: 'CASCADE',
@@ -16,10 +17,10 @@ module.exports = {
     });
 
     // 2. Cambiar tipo de dato de 'meterid' en la tabla 'Bills'
-    await queryInterface.changeColumn('Bills', 'meterid', {
+    await queryInterface.changeColumn({ tableName: 'Bills', schema }, 'meterid', {
       type: Sequelize.INTEGER,
       references: {
-        model: 'Meters',
+        model: { tableName: 'Meters', schema },
         key: 'id',
       },
       onUpdate: 'CASCADE',
@@ -29,11 +30,12 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    const schema = queryInterface.sequelize.options.schema || 'public';
     // 1. Cambiar tipo de dato de 'created_by' en la tabla 'Bills'
-    await queryInterface.changeColumn('Bills', 'created_by', {
+    await queryInterface.changeColumn({ tableName: 'Bills', schema }, 'created_by', {
       type: Sequelize.INTEGER,
       references: {
-        model: 'Users',
+        model: { tableName: 'Users', schema },
         key: 'id',
       },
       onUpdate: 'CASCADE',
@@ -42,10 +44,10 @@ module.exports = {
     });
 
     // 2. Cambiar tipo de dato de 'meterid' en la tabla 'Bills'
-    await queryInterface.changeColumn('Bills', 'meterid', {
+    await queryInterface.changeColumn({ tableName: 'Bills', schema }, 'meterid', {
       type: Sequelize.INTEGER,
       references: {
-        model: 'Meters',
+        model: { tableName: 'Meters', schema },
         key: 'id',
       },
       onUpdate: 'CASCADE',

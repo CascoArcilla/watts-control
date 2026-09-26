@@ -2,15 +2,15 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    const isMysql = queryInterface.sequelize.getDialect() === 'mysql';
-    await queryInterface.createTable('UserGroups', {
+  async up(queryInterface, Sequelize) {
+    const schema = queryInterface.sequelize.options.schema || 'public';
+    await queryInterface.createTable({ tableName: 'UserGroups', schema }, {
       userId: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: { tableName: 'Users', schema },
           key: 'id'
         },
         onDelete: 'CASCADE',
@@ -21,7 +21,7 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
         references: {
-          model: 'Groups',
+          model: { tableName: 'Groups', schema },
           key: 'id'
         },
         onDelete: 'CASCADE',
@@ -35,12 +35,13 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: isMysql ? Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP') : Sequelize.literal('CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('UserGroups');
+  async down(queryInterface, Sequelize) {
+    const schema = queryInterface.sequelize.options.schema || 'public';
+    await queryInterface.dropTable({ tableName: 'UserGroups', schema });
   }
 };

@@ -2,7 +2,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('FeeConfs', {
+    const schema = queryInterface.sequelize.options.schema || 'public';
+    await queryInterface.createTable({ tableName: 'FeeConfs', schema }, {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -44,6 +45,7 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('FeeConfs');
+    const schema = queryInterface.sequelize.options.schema || 'public';
+    await queryInterface.dropTable({ tableName: 'FeeConfs', schema });
   }
 };
