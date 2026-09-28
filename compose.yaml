@@ -10,11 +10,11 @@ services:
       watch:
         - path: ./backend
           action: rebuild
-    depends_on:
-      ec-db-mysql:
-        condition: service_healthy
     networks:
       - net-ec-sys
+    depends_on:
+      ec-db-postgres:
+        condition: service_healthy
 
   ec-app-frontend:
     build:
@@ -34,27 +34,32 @@ services:
     networks:
       - net-ec-sys
 
-  ec-db-mysql:
-    image: mysql:8.0
+  ec-db-postgres:
+    image: postgres:latest
     restart: always
-    container_name: ec-db-mysql
+    container_name: ec-db-postgres
     volumes:
-      - db-control-watts:/var/lib/mysql
-    env_file:
-      - .env
+      - db-control-postgres:/var/lib/postgresql
+      - ./docker/init-schema.sql:/docker-entrypoint-initdb.d/init-schema.sql:ro
+    environment:
+      - POSTGRES_PASSWORD=${EC_DB_PASSWORD}
+      - POSTGRES_USER=${EC_DB_USER}
+      - POSTGRES_DB=${EC_DB_NAME}
     ports:
       - "9100:${EC_DB_PORT}"
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: [ "CMD", "pg_isready", "-h", "localhost", "-U", "${EC_DB_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - net-ec-sys
+      net-ec-sys:
+        aliases:
+          - postgres-container
 
 networks:
   net-ec-sys:
     driver: bridge
 
 volumes:
-  db-control-watts:
+  db-control-postgres:
