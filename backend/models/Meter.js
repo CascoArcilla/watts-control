@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Meter.belongsTo(models.User, { foreignKey: 'userId' });
       Meter.hasMany(models.Bill, { foreignKey: 'meterId' });
       Meter.hasMany(models.Measure, { foreignKey: 'meterId' });
+      Meter.hasOne(models.FeeConf, { foreignKey: 'meterId' });
       Meter.belongsToMany(models.User, { through: 'UserMeters', foreignKey: 'meterId', as: 'AuthorizedUsers' });
     }
   }

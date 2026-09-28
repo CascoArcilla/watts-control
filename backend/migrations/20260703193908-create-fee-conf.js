@@ -3,15 +3,36 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     const schema = queryInterface.sequelize.options.schema || 'public';
-    await queryInterface.createTable({ tableName: 'Groups', schema }, {
+    await queryInterface.createTable({ tableName: 'FeeConfs', schema }, {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING
+      feeId: {
+        type: Sequelize.INTEGER
+      },
+      meterId: {
+        type: Sequelize.INTEGER
+      },
+      dca: {
+        type: Sequelize.DOUBLE
+      },
+      bs_limit: {
+        type: Sequelize.DOUBLE
+      },
+      bs_price: {
+        type: Sequelize.DOUBLE
+      },
+      md_limit: {
+        type: Sequelize.DOUBLE
+      },
+      md_price: {
+        type: Sequelize.DOUBLE
+      },
+      sp_price: {
+        type: Sequelize.DOUBLE
       },
       createdAt: {
         allowNull: false,
@@ -25,6 +46,6 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     const schema = queryInterface.sequelize.options.schema || 'public';
-    await queryInterface.dropTable({ tableName: 'Groups', schema });
+    await queryInterface.dropTable({ tableName: 'FeeConfs', schema });
   }
 };

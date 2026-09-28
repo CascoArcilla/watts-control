@@ -1,16 +1,54 @@
-# React + Vite
+# Frontend - Watts Control
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación React para el control de consumo eléctrico.
 
-Currently, two official plugins are available:
+## Stack Tecnológico
+- **React 19** — UI library
+- **Vite 8** — Build tool & dev server
+- **React Router 7** — Routing (SPA)
+- **Tailwind CSS 4** — Styling (v4 con @tailwindcss/postcss)
+- **Axios** — HTTP client con interceptor auto-refresh de tokens
+- **Lucide React** — Iconos
+- **ESLint (flat config)** — Linting
+- **PostCSS + autoprefixer** — CSS processing
+- **pnpm** — Package manager
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Scripts
+```bash
+pnpm install        # Instalar dependencias
+pnpm dev            # Servidor de desarrollo (puerto 5173)
+pnpm dev:host       # Servidor de desarrollo accesible en red
+pnpm build          # Build de producción (output en dist/)
+pnpm lint           # Ejecutar ESLint
+pnpm preview        # Preview del build de producción
+```
 
-## React Compiler
+## Estructura
+```
+src/
+├── components/     # Componentes reutilizables
+├── pages/          # Páginas (rutas)
+├── context/        # React Context (AuthContext, etc.)
+├── hooks/          # Custom hooks
+├── utils/          # Utilidades
+├── layout/         # Layouts (Sidebar, Header, etc.)
+├── App.jsx         # Componente raíz con rutas
+└── main.jsx        # Entry point
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Variables de entorno
+Copia `.env.example` a `.env` y ajusta:
 
-## Expanding the ESLint configuration
+| Variable | Descripción |
+|----------|-------------|
+| `VITE_API_URL` | URL base de la API backend (ej: `http://localhost:9200`) |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Nota:** El frontend usa `__VITE_API_URL__` (Vite `define` global), NO `import.meta.env`.
+
+## Autenticación
+- JWT en cookies httpOnly (access 15min + refresh 7d)
+- Axios interceptor en `AuthContext.jsx` maneja auto-refresh en 401
+- CORS configurado con `credentials: true`
+
+## Rutas protegidas
+Ver `src/App.jsx` — usa `ProtectedRoute` con verificación de roles (`Administrador`, `Lector`, `Propietario`).

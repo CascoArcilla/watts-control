@@ -1,3 +1,13 @@
+## Este Dockerfile esta pensado para montar todo el sistema en un solo contenedor
+## No es el ideal, pero es el que funciona por ahora
+
+## El servicio de postgres es externo a este docker, 
+## por lo que hay que tenerlo corriendo en otro contenedor
+## o en la maquina host
+
+## La app frontend esta pensada para ser servida por el backend
+## Usa pnpm como administrador de paquetes
+
 ARG NODE_VERSION=22.19.0
 ARG PNPM_VERSION=10.17.1
 

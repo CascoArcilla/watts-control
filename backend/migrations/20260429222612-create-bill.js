@@ -2,8 +2,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const isMysql = queryInterface.sequelize.getDialect() === 'mysql';
-    await queryInterface.createTable('Bills', {
+    const schema = queryInterface.sequelize.options.schema || 'public';
+    await queryInterface.createTable({ tableName: 'Bills', schema }, {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -29,7 +29,7 @@ module.exports = {
       meterid: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Meters',
+          model: { tableName: 'Meters', schema },
           key: 'id'
         },
         onDelete: 'CASCADE',
@@ -38,7 +38,7 @@ module.exports = {
       created_by: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Users',
+          model: { tableName: 'Users', schema },
           key: 'id'
         },
         onDelete: 'CASCADE',
@@ -52,11 +52,12 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: isMysql ? Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP') : Sequelize.literal('CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Bills');
+    const schema = queryInterface.sequelize.options.schema || 'public';
+    await queryInterface.dropTable({ tableName: 'Bills', schema });
   }
 };

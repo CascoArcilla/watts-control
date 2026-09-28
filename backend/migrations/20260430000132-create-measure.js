@@ -2,7 +2,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Measures', {
+    const schema = queryInterface.sequelize.options.schema || 'public';
+    await queryInterface.createTable({ tableName: 'Measures', schema }, {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -17,7 +18,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {
-          model: 'Users',
+          model: { tableName: 'Users', schema },
           key: 'id',
         },
         onUpdate: 'CASCADE',
@@ -27,7 +28,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {
-          model: 'Meters',
+          model: { tableName: 'Meters', schema },
           key: 'id',
         },
         onUpdate: 'CASCADE',
@@ -44,6 +45,7 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Measures');
+    const schema = queryInterface.sequelize.options.schema || 'public';
+    await queryInterface.dropTable({ tableName: 'Measures', schema });
   }
 };

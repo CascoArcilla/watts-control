@@ -2,8 +2,9 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('Groups', [
+  async up(queryInterface, Sequelize) {
+    const schema = queryInterface.sequelize.options.schema || 'public';
+    await queryInterface.bulkInsert({ tableName: 'Groups', schema }, [
       {
         name: 'Administrador',
         createdAt: new Date(),
@@ -22,7 +23,8 @@ module.exports = {
     ], {});
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Groups', null, {});
+  async down(queryInterface, Sequelize) {
+    const schema = queryInterface.sequelize.options.schema || 'public';
+    await queryInterface.bulkDelete({ tableName: 'Groups', schema }, null, {});
   }
 };
