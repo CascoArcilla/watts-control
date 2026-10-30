@@ -8,7 +8,7 @@
 ## La app frontend esta pensada para ser servida por el backend
 ## Usa pnpm como administrador de paquetes
 
-ARG NODE_VERSION=22.19.0
+ARG NODE_VERSION=22.23.4
 ARG PNPM_VERSION=10.17.1
 
 # --- Phase 1: Build Frontend ---
