@@ -16,7 +16,7 @@ FROM node:${NODE_VERSION}-alpine AS frontend-builder
 RUN npm install -g pnpm@${PNPM_VERSION}
 WORKDIR /app/frontend
 
-COPY frontend/package.json frontend/pnpm-lock.yaml ./
+COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml ./
 
 # Force installation of devDependencies and include hoisting for binaries
 RUN pnpm install --frozen-lockfile
@@ -33,7 +33,7 @@ RUN npm install -g pnpm@${PNPM_VERSION}
 WORKDIR /app/backend
 
 # Installation of backend dependencies
-COPY backend/package.json backend/pnpm-lock.yaml ./
+COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Copy the backend code
