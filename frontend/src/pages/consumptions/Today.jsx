@@ -41,8 +41,14 @@ export default function Today() {
     }
 
     try {
+      const now = new Date();
+      // Local calendar date encoded as UTC midnight, so the backend can derive the
+      // real UTC range using the client's timezone offset (measures are stored in UTC).
+      const localDate = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
       const params = {
-        date: new Date().toDateString(),
+        date: localDate.toISOString(),
+        // Standard UTC offset in milliseconds (local = UTC + offset): UTC-06:00 => -21600000
+        offset: -now.getTimezoneOffset() * 60 * 1000,
         page,
         limit: 10,
         meterId: selectedMeter || undefined
