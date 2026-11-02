@@ -43,12 +43,21 @@ export default function History() {
     }
 
     try {
+      const start = parseDateInput(startDate);
+      const end = parseDateInput(endDate);
+      // Use the range start (or end / today) to resolve the client's UTC offset,
+      // so DST is respected for the selected dates.
+      const referenceDate = start || end || new Date();
+      // Dates are encoded as UTC midnight of the local calendar day; the backend
+      // converts them to the real UTC range using the offset below.
       const params = {
         page,
         limit: 10,
         meterId: selectedMeter || undefined,
-        startDate: parseDateInput(startDate)?.toDateString() || undefined,
-        endDate: parseDateInput(endDate)?.toDateString() || undefined
+        startDate: start ? new Date(Date.UTC(start.getFullYear(), start.getMonth(), start.getDate())).toISOString() : undefined,
+        endDate: end ? new Date(Date.UTC(end.getFullYear(), end.getMonth(), end.getDate())).toISOString() : undefined,
+        // Standard UTC offset in milliseconds (local = UTC + offset): UTC-06:00 => -21600000
+        offset: -referenceDate.getTimezoneOffset() * 60 * 1000
       };
       const res = await axios.get('/consumptions', { params });
 
