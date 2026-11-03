@@ -10,6 +10,7 @@ import RegisterMeter from './pages/meters/Register';
 import RegisterConsumption from './pages/consumptions/Register';
 import Today from './pages/consumptions/Today';
 import History from './pages/consumptions/History';
+import Charts from './pages/charts/Charts';
 import NotFound from './pages/NotFound';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -28,6 +29,7 @@ function App() {
               <Route path="consumptions/register" element={<RegisterConsumption />} />
               <Route path="consumptions/today/:page?" element={<Today />} />
               <Route path="consumptions/history/:page?" element={<History />} />
+              <Route path="charts" element={<Charts />} />
               <Route path="meters" element={<MetersMain />} />
 
               {/* Admin only */}
