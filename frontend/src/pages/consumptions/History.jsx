@@ -3,8 +3,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { Plus, Filter, Zap, RefreshCw, AlertCircle, Calendar } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import ItemRegister from './ItemRegister';
-import Pagination from './Pagination';
+import ConsumptionCard from '../../components/consumptions/ConsumptionCard';
+import ItemRegister from '../../components/consumptions/ItemRegister';
+import Pagination from '../../components/consumptions/Pagination';
 
 export default function History() {
   const { page: pageParam } = useParams();
@@ -22,6 +23,7 @@ export default function History() {
   const [endDate, setEndDate] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [consumption, setConsumption] = useState(null);
 
   const fetchMeters = async () => {
     try {
@@ -61,7 +63,7 @@ export default function History() {
       };
       const res = await axios.get('/consumptions', { params });
 
-      const { measures: fetchedMeasures, pagination: fetchedPagination } = res.data;
+      const { measures: fetchedMeasures, pagination: fetchedPagination, consumption: fetchedConsumption } = res.data;
 
       if (page > fetchedPagination.totalPages && fetchedPagination.totalPages > 0) {
         setError(`La página ${page} no existe. El historial solo tiene ${fetchedPagination.totalPages} páginas.`);
@@ -69,6 +71,8 @@ export default function History() {
 
       setMeasures(fetchedMeasures);
       setPagination(fetchedPagination);
+      // Total consumption only makes sense when a meter and both dates are selected
+      setConsumption(selectedMeter && startDate && endDate ? fetchedConsumption : null);
     } catch (err) {
       setError('No se pudo cargar el historial de consumos.');
     } finally {
@@ -88,6 +92,7 @@ export default function History() {
   useEffect(() => {
     if (startDate === '' || endDate === '') return;
     if (startDate > endDate) {
+      setConsumption(null);
       setError('La fecha de inicio no puede ser mayor a la fecha de fin.');
       return;
     }
@@ -173,6 +178,11 @@ export default function History() {
           </div>
         </div>
       </div>
+
+      {/* Total consumption for the selected range */}
+      {selectedMeter && startDate && endDate && (
+        <ConsumptionCard consumption={consumption} label="Consumo total" />
+      )}
 
       {/* Content */}
       <div className="glass-card">

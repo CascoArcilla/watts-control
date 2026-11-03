@@ -22,6 +22,7 @@ export default function Header() {
     '/meters': 'Medidores',
     '/meters/register': 'Registrar Nuevo Medidor',
     '/consumptions/register': 'Registrar Consumo',
+    '/charts': 'Gráficos',
   };
 
   const currentTitle = titles[location.pathname] || 'Eletrican Control';

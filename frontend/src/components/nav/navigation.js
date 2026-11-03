@@ -1,4 +1,4 @@
-import { Home, Zap, Activity, Shield, Clock, Users, UserPlus, History } from 'lucide-react';
+import { Home, Zap, Activity, Shield, Clock, Users, UserPlus, History, ChartLine } from 'lucide-react';
 
 export const navigationLinks = [
   { name: 'Admin Dashboard', path: '/admin', icon: Shield, roles: ['Administrador'] },
@@ -8,5 +8,6 @@ export const navigationLinks = [
   { name: 'Medidores', path: '/meters', icon: Clock },
   { name: 'Registros de Hoy', path: '/consumptions/today', icon: Home },
   { name: 'Historial de Registros', path: '/consumptions/history', icon: History },
+  { name: 'Gráficos', path: '/charts', icon: ChartLine },
   { name: 'Registrar Consumo', path: '/consumptions/register', icon: Activity },
 ];
