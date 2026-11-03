@@ -27,7 +27,7 @@ export default function ItemRegister({ measure }) {
           {new Date(measure.createdAt).toLocaleDateString()}
         </p>
         <p className="text-[10px] sm:text-xs text-white font-bold bg-medium-green/20 px-2 py-1 rounded border border-medium-green/30">
-          {new Date(measure.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}hrs
+          {new Date(measure.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
     </div>

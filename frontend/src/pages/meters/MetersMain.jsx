@@ -3,9 +3,9 @@ import { Zap, Plus, RefreshCw, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
-import MeterItem from './MeterItem';
-import ConfirmStatusModal from './ConfirmStatusModal';
-import EditMeterModal from './EditMeterModal';
+import MeterItem from '../../components/meters/MeterItem';
+import ConfirmStatusModal from '../../components/meters/ConfirmStatusModal';
+import EditMeterModal from '../../components/meters/EditMeterModal';
 
 export default function MetersMain() {
   const { hasRole } = useAuth();
