@@ -18,6 +18,7 @@ export default function MobileNav() {
     '/admin/users/create': 'Crear Usuario',
     '/consumptions/today': 'Registros de Hoy',
     '/consumptions/history': 'Historial de Registros',
+    '/charts': 'Gráficos',
   };
 
   const currentTitle = titles[location.pathname] || 'EC Control';

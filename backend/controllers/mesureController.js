@@ -33,6 +33,55 @@ const getUtcBounds = (dateClient, offsetMs = 0) => {
   };
 };
 
+/**
+ * Calculates the UTC range covered by the requested filters.
+ * @param {{date?: string, startDate?: string, endDate?: string}} filters
+ * @param {number} [offsetMs=0] Client timezone offset in milliseconds
+ * @returns {{start: string, end: string}|null}
+ */
+const getDateRange = ({ date, startDate, endDate }, offsetMs = 0) => {
+  if (date) return getUtcBounds(date, offsetMs);
+
+  if (startDate && endDate) {
+    const { start } = getUtcBounds(startDate, offsetMs);
+    const { end } = getUtcBounds(endDate, offsetMs);
+    return { start, end };
+  }
+
+  return null;
+};
+
+/**
+ * Calculates a meter's consumption within a UTC range: the latest reading
+ * inside the range minus the latest reading registered before it.
+ * Used by both the daily (Today) and range (History) queries.
+ * @param {number|string} meterId
+ * @param {{start: string, end: string}} range
+ * @returns {Promise<{kwh: number, referenceDate: Date|null, referenceKwh: number|null}|null>}
+ */
+const getConsumption = async (meterId, range) => {
+  if (!meterId || !range) return null;
+
+  const [lastMeasure, previousMeasure] = await Promise.all([
+    Measure.findOne({
+      where: { meterId, createdAt: { [Op.between]: [range.start, range.end] } },
+      order: [["createdAt", "DESC"]],
+    }),
+    Measure.findOne({
+      where: { meterId, createdAt: { [Op.lt]: range.start } },
+      order: [["createdAt", "DESC"]],
+    }),
+  ]);
+
+  if (!lastMeasure || !previousMeasure) return null;
+
+  return {
+    kwh: parseInt(lastMeasure.watts) - parseInt(previousMeasure.watts),
+    referenceDate: previousMeasure.createdAt || null,
+    referenceKwh: previousMeasure.watts || null,
+  };
+};
+
 // Helper to get accessible meter IDs for a user
 const getAccessibleMeterIds = async (userId, userGroups) => {
   const isAdmin = userGroups.includes("Administrador");
@@ -103,13 +152,9 @@ exports.getMeasures = async (req, res) => {
     }
 
     // Filter by date
-    if (date) {
-      const { start, end } = getUtcBounds(date, tzOffsetMs);
-      where.createdAt = { [Op.between]: [start, end] };
-    } else if (startDate && endDate) {
-      const { start } = getUtcBounds(startDate, tzOffsetMs);
-      const { end } = getUtcBounds(endDate, tzOffsetMs);
-      where.createdAt = { [Op.between]: [start, end] };
+    const range = getDateRange({ date, startDate, endDate }, tzOffsetMs);
+    if (range) {
+      where.createdAt = { [Op.between]: [range.start, range.end] };
     }
 
     const { count, rows } = await Measure.findAndCountAll({
@@ -145,27 +190,11 @@ exports.getMeasures = async (req, res) => {
       },
     };
 
-    // Calculate the meter's consumption from the indicate date
-    if (date && meterId) {
-      const kwhToday = parseInt(rows[0]?.watts) || null;
-
-      const { start: startDayUtc } = getUtcBounds(date, tzOffsetMs);
-      // Find the more recent measure before the indicate date
-      const lastMeasure = await Measure.findOne({
-        where: {
-          meterId,
-          createdAt: { [Op.lt]: startDayUtc },
-        },
-        order: [["createdAt", "DESC"]],
-      });
-
-      if (kwhToday && lastMeasure) {
-        const consumption = parseInt(kwhToday) - parseInt(lastMeasure.watts);
-        responseJson.consumption = {
-          kwh: consumption,
-          referenceDate: lastMeasure?.createdAt || null,
-          referenceKwh: lastMeasure?.watts || null,
-        };
+    // Total consumption for the requested meter and range (Today or History)
+    if (meterId && range) {
+      const consumption = await getConsumption(meterId, range);
+      if (consumption) {
+        responseJson.consumption = consumption;
       }
     }
 
@@ -261,3 +290,5 @@ exports.register = async (request, response) => {
 };
 
 exports.getUtcBounds = getUtcBounds;
+exports.getDateRange = getDateRange;
+exports.getConsumption = getConsumption;

@@ -2,8 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { Plus, Filter, Zap, RefreshCw, AlertCircle } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import ItemRegister from './ItemRegister';
-import Pagination from './Pagination';
+import ConsumptionCard from '../../components/consumptions/ConsumptionCard';
+import ItemRegister from '../../components/consumptions/ItemRegister';
+import Pagination from '../../components/consumptions/Pagination';
 
 export default function Today() {
   const { page: pageParam } = useParams();
@@ -129,24 +130,7 @@ export default function Today() {
       </div>
 
       {/* Consumption Card */}
-      {consumption && consumption.kwh && (
-        <div className="glass-card">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-gray-400">
-              <Zap className="w-4 h-4 text-light-mint" />
-              <span className="text-sm md:text-md text-gray-300 font-medium">Consumo:</span>
-            </div>
-            <p className="text-lg md:text-xl font-bold text-white">{consumption.kwh} kWh</p>
-          </div>
-          <div className="mt-2 pt-2 border-t border-gray-green/10">
-            <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wider mb-1">Referencia Anterior</p>
-            <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
-              {new Date(consumption.referenceDate).toLocaleDateString()} {new Date(consumption.referenceDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}hrs 
-              <span className="text-white font-medium ml-1">({consumption.referenceKwh} kWh)</span>
-            </p>
-          </div>
-        </div>
-      )}
+      <ConsumptionCard consumption={consumption} />
 
       {/* Results */}
       <div className="glass-card">

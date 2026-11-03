@@ -5,13 +5,13 @@ import {
   Users, UserPlus, Shield, AlertCircle, RefreshCw
 } from 'lucide-react';
 
-import EditUserModal from './EditUserModal';
-import EditGroupsModal from './EditGroupsModal';
-import BlockUnblockUserModal from './BlockUnblockUserModal';
+import EditUserModal from '../../../components/users/EditUserModal';
+import EditGroupsModal from '../../../components/users/EditGroupsModal';
+import BlockUnblockUserModal from '../../../components/users/BlockUnblockUserModal';
 
-import UserTable from './UserTable';
-import UserCardList from './UserCardList';
-import UserPagination from './UserPagination';
+import UserTable from '../../../components/users/UserTable';
+import UserCardList from '../../../components/users/UserCardList';
+import UserPagination from '../../../components/users/UserPagination';
 
 const GROUP_COLORS = {
   'Administrador': 'bg-purple-500/15 text-purple-300 border-purple-500/30',
